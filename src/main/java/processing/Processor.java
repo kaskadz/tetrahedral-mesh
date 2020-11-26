@@ -20,14 +20,14 @@ public class Processor {
                         production -> production));
     }
 
-    public TetrahedralGraph applyProductions(TetrahedralGraph graph, int level, int[] productionIds) {
+    public TetrahedralGraph applyProductions(TetrahedralGraph graph, int[] productionIds) {
         List<Production> productionStream = Arrays.stream(productionIds)
                 .mapToObj(productionMap::get)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         for (Production p : productionStream) {
-            graph = p.tryApply(graph, level);
+            graph = p.tryApply(graph);
         }
 
         return graph;
