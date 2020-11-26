@@ -1,8 +1,9 @@
 package app;
 
+import model.GraphNode;
+import model.Point2d;
+import model.TetrahedralGraph;
 import org.apache.log4j.BasicConfigurator;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
 
 import java.util.logging.Logger;
 
@@ -14,14 +15,11 @@ public class App {
         Parameters parameters = Parameters.readArgs(args);
 
         System.out.println(parameters);
-        Graph graph = new SingleGraph("Tutorial 1");
+        TetrahedralGraph graph = new TetrahedralGraph("xd");
 
-        graph.addNode("A");
-        graph.addNode("B");
-        graph.addNode("C");
-        graph.addEdge("AB", "A", "B");
-        graph.addEdge("BC", "B", "C");
-        graph.addEdge("CA", "C", "A");
+//        new GraphNode(graph, "H", 0, new Point2d(1.0, 1.0));
+
+        graph.forEach(x -> System.out.println(x.getId()));
 
         graph.display();
     }
