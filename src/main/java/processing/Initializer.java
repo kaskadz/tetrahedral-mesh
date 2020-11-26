@@ -4,6 +4,10 @@ import model.TetrahedralGraph;
 
 public class Initializer {
     public TetrahedralGraph initializeGraph() {
-        throw new UnsupportedOperationException("TODO");
+        TetrahedralGraph graph = new TetrahedralGraph();
+
+        graph.insertInteriorNode("e");
+
+        return graph;
     }
 }
