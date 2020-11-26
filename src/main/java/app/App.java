@@ -2,22 +2,30 @@ package app;
 
 import model.TetrahedralGraph;
 import org.apache.log4j.BasicConfigurator;
+import processing.Initializer;
+import processing.Processor;
+import production.Production;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class App {
     private static final Logger log = Logger.getLogger(App.class.getName());
+    private static final Production[] productions = {
+    };
 
     public static void main(String[] args) {
         BasicConfigurator.configure();
         Parameters parameters = Parameters.readArgs(args);
 
         System.out.println(parameters);
-        TetrahedralGraph graph = new TetrahedralGraph();
 
-//        new GraphNode(graph, "H", 0, new Point2d(1.0, 1.0));
+        var initializer = new Initializer();
+        var processor = new Processor(Arrays.asList(productions));
 
-//        graph.forEach(x -> System.out.println(x.getId()));
+        TetrahedralGraph graph = initializer.initializeGraph();
+
+        graph = processor.applyProductions(graph, parameters.productionIds);
 
         graph.getGraph().display();
     }
