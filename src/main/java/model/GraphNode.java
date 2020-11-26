@@ -1,12 +1,11 @@
 package model;
 
-import common.NodeWrapper;
 import common.NodeType;
+import common.NodeWrapper;
 import common.StreamUtils;
 import org.graphstream.graph.Element;
 import org.graphstream.graph.Node;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class GraphNode extends NodeBase {
@@ -33,16 +32,15 @@ public class GraphNode extends NodeBase {
         return getSiblingsIds().map(x -> getGraph().getGraphNode(x));
     }
 
-    public Optional<String> getInteriorId() {
+    public Stream<String> getInteriorsIds() {
         return StreamUtils.asStream(getNode().getNeighborNodeIterator())
                 .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.INTERIOR)
                 .map(NodeWrapper::getNode)
-                .map(Element::getId)
-                .findFirst();
+                .map(Element::getId);
     }
 
-    public Optional<InteriorNode> getInterior() {
-        return getInteriorId().map(x -> getGraph().getInteriorNode(x));
+    public Stream<InteriorNode> getInteriors() {
+        return getInteriorsIds().map(x -> getGraph().getInteriorNode(x));
     }
 }
