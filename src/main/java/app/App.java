@@ -1,7 +1,5 @@
 package app;
 
-import model.GraphNode;
-import model.Point2d;
 import model.TetrahedralGraph;
 import org.apache.log4j.BasicConfigurator;
 
@@ -15,12 +13,12 @@ public class App {
         Parameters parameters = Parameters.readArgs(args);
 
         System.out.println(parameters);
-        TetrahedralGraph graph = new TetrahedralGraph("xd");
+        TetrahedralGraph graph = new TetrahedralGraph();
 
 //        new GraphNode(graph, "H", 0, new Point2d(1.0, 1.0));
 
-        graph.forEach(x -> System.out.println(x.getId()));
+//        graph.forEach(x -> System.out.println(x.getId()));
 
-        graph.display();
+        graph.getGraph().display();
     }
 }

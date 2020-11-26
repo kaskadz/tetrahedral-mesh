@@ -2,23 +2,29 @@ package model;
 
 import common.Attributes;
 import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.graph.implementations.SingleGraph;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TetrahedralGraph extends MultiGraph {
+public class TetrahedralGraph {
+    private final Graph graph;
     private final Map<String, GraphNode> graphNodes = new HashMap<>();
     private final Map<String, InteriorNode> interiorNodes = new HashMap<>();
 
-    public TetrahedralGraph(String id) {
-        super(id);
+    public TetrahedralGraph() {
+        graph = new SingleGraph("tetrahedralGraph");
+    }
+
+    public Graph getGraph() {
+        return graph;
     }
 
     public GraphNode insertGraphNode(String symbol, Point2d coordinates) {
         String id = generateId();
-        Node node = this.addNode(id);
+        Node node = graph.addNode(id);
         node.setAttribute(Attributes.FROZEN_LAYOUT);
         node.setAttribute(Attributes.LABEL, symbol);
         node.setAttribute(Attributes.NodeType.REGULAR);
@@ -34,16 +40,16 @@ public class TetrahedralGraph extends MultiGraph {
 
     public void removeGraphNode(String id) {
         graphNodes.remove(id);
-        this.removeNode(id);
+        graph.removeNode(id);
     }
 
     public void removeGraphNode(GraphNode graphNode) {
-        removeNode(graphNode.getId());
+        graph.removeNode(graphNode.getId());
     }
 
     public InteriorNode insertInteriorNode(String symbol) {
         String id = generateId();
-        Node node = this.addNode(id);
+        Node node = graph.addNode(id);
         node.setAttribute(Attributes.FROZEN_LAYOUT);
         node.setAttribute(Attributes.LABEL, symbol);
         node.setAttribute(Attributes.NodeType.INTERIOR);
@@ -58,21 +64,21 @@ public class TetrahedralGraph extends MultiGraph {
 
     public Edge connectNodes(GraphNode graphNode1, GraphNode graphNode2) {
         String id = generateId();
-        var edge = this.addEdge(id, graphNode1.getNode(), graphNode2.getNode(), false);
+        var edge = graph.addEdge(id, graphNode1.getNode(), graphNode2.getNode(), false);
         edge.addAttribute(Attributes.EdgeType.SAME_LEVEL);
         return edge;
     }
 
     public Edge connectNodes(InteriorNode interiorNode, GraphNode graphNode) {
         String id = generateId();
-        var edge = this.addEdge(id, interiorNode.getNode(), graphNode.getNode(), false);
+        var edge = graph.addEdge(id, interiorNode.getNode(), graphNode.getNode(), false);
         edge.addAttribute(Attributes.EdgeType.PARENT);
         return edge;
     }
 
     public Edge connectNodes(InteriorNode interiorNode1, InteriorNode interiorNode2) {
         String id = generateId();
-        var edge = this.addEdge(id, interiorNode1.getNode(), interiorNode2.getNode(), false);
+        var edge = graph.addEdge(id, interiorNode1.getNode(), interiorNode2.getNode(), false);
         edge.addAttribute(Attributes.EdgeType.SAME_LEVEL);
         return edge;
     }
