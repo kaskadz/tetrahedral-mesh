@@ -2,7 +2,11 @@ package model;
 
 import common.NodeWrapper;
 import common.NodeType;
+import common.StreamUtils;
+import org.graphstream.graph.Element;
 import org.graphstream.graph.Node;
+
+import java.util.stream.Stream;
 
 public class NodeBase {
     private final TetrahedralGraph graph;
@@ -39,5 +43,15 @@ public class NodeBase {
 
     public int getLevel() {
         return nodeWrapper.getLevel();
+    }
+
+    public Stream<String> getDfsIdsStream() {
+        return StreamUtils.asStream(getNode().getDepthFirstIterator())
+                .map(Element::getId);
+    }
+
+    public Stream<String> getBfsIdsStream() {
+        return StreamUtils.asStream(getNode().getBreadthFirstIterator())
+                .map(Element::getId);
     }
 }
