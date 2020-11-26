@@ -27,6 +27,6 @@ public class App {
 
         graph = processor.applyProductions(graph, parameters.productionIds);
 
-        graph.getGraph().display();
+        graph.displayLevel(0);
     }
 }

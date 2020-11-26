@@ -22,7 +22,22 @@ public class TetrahedralGraph {
         return graph;
     }
 
-    public GraphNode insertGraphNode(String symbol, Point2d coordinates) {
+    public void displayLevel(int level) {
+        TetrahedralGraph view = new TetrahedralGraph();
+        for (GraphNode n : graphNodes.values()) {
+            if (n.getLevel() == level) {
+                view.insertGraphNode(
+                        n.getLevel(),
+                        n.getSymbol(),
+                        n.getCoordinates()
+                );
+            }
+        }
+
+        view.graph.display();
+    }
+
+    public GraphNode insertGraphNode(int level, String symbol, Point2d coordinates) {
         String id = generateId();
         Node node = graph.addNode(id);
         node.setAttribute(Attributes.FROZEN_LAYOUT);
@@ -47,7 +62,7 @@ public class TetrahedralGraph {
         graph.removeNode(graphNode.getId());
     }
 
-    public InteriorNode insertInteriorNode(String symbol) {
+    public InteriorNode insertInteriorNode(int level, String symbol) {
         String id = generateId();
         Node node = graph.addNode(id);
         node.setAttribute(Attributes.FROZEN_LAYOUT);

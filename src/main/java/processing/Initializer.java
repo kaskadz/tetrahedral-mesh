@@ -6,7 +6,7 @@ public class Initializer {
     public TetrahedralGraph initializeGraph() {
         TetrahedralGraph graph = new TetrahedralGraph();
 
-        graph.insertInteriorNode("e");
+        graph.insertInteriorNode(0, "e");
 
         return graph;
     }
