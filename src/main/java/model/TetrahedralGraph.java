@@ -16,13 +16,13 @@ public class TetrahedralGraph extends MultiGraph {
         super(id);
     }
 
-    public GraphNode insertGraphNode(String id, int level, String symbol, Point2d coordinates) {
+    public GraphNode insertGraphNode(String id, String symbol, Point2d coordinates) {
         Node node = this.addNode(id);
         node.setAttribute(Attributes.FROZEN_LAYOUT);
         node.setAttribute(Attributes.LABEL, symbol);
         node.setAttribute(Attributes.NodeType.REGULAR);
         node.setAttribute(Attributes.XY, coordinates.getX(), coordinates.getY());
-        var graphNode = new GraphNode(this, node, level, "H", coordinates);
+        var graphNode = new GraphNode(this, node, coordinates);
         graphNodes.put(id, graphNode);
         return graphNode;
     }

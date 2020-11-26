@@ -1,6 +1,6 @@
 package model;
 
-import common.NodeAttributesAccessor;
+import common.NodeWrapper;
 import common.NodeType;
 import common.StreamUtils;
 import org.graphstream.graph.Element;
@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public class GraphNode extends NodeBase {
     private final Point2d coordinates;
 
-    protected GraphNode(TetrahedralGraph graph, Node node, int level, String symbol, Point2d coordinates) {
+    protected GraphNode(TetrahedralGraph graph, Node node, Point2d coordinates) {
         super(graph, node);
         this.coordinates = coordinates;
     }
@@ -21,21 +21,28 @@ public class GraphNode extends NodeBase {
         return coordinates;
     }
 
-    public Stream<String> getSameLevelNeighbourIds() {
+    public Stream<String> getSiblingsIds() {
         return StreamUtils.asStream(getNode().getNeighborNodeIterator())
-                .map(NodeAttributesAccessor::new)
+                .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.REGULAR)
-                .map(NodeAttributesAccessor::getNode)
+                .map(NodeWrapper::getNode)
                 .map(Element::getId);
     }
 
-    public Optional<String> getParentId() {
+    public Stream<GraphNode> getSiblings() {
+        return getSiblingsIds().map(x -> getGraph().getGraphNode(x));
+    }
+
+    public Optional<String> getInteriorId() {
         return StreamUtils.asStream(getNode().getNeighborNodeIterator())
-                .map(NodeAttributesAccessor::new)
+                .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.INTERIOR)
-                .filter(x -> x.getLevel() == (getLevel() - 1))
-                .map(NodeAttributesAccessor::getNode)
+                .map(NodeWrapper::getNode)
                 .map(Element::getId)
                 .findFirst();
+    }
+
+    public Optional<InteriorNode> getInterior() {
+        return getInteriorId().map(x -> getGraph().getInteriorNode(x));
     }
 }

@@ -2,10 +2,10 @@ package common;
 
 import org.graphstream.graph.Node;
 
-public class NodeAttributesAccessor {
+public class NodeWrapper {
     private final Node node;
 
-    public NodeAttributesAccessor(Node node) {
+    public NodeWrapper(Node node) {
         this.node = node;
     }
 

@@ -1,18 +1,16 @@
 package model;
 
-import common.NodeAttributesAccessor;
+import common.NodeWrapper;
 import common.NodeType;
 import org.graphstream.graph.Node;
 
 public class NodeBase {
     private final TetrahedralGraph graph;
-    private final Node node;
-    private final NodeAttributesAccessor nodeAttributesAccessor;
+    private final NodeWrapper nodeWrapper;
 
     protected NodeBase(TetrahedralGraph graph, Node node) {
         this.graph = graph;
-        this.node = node;
-        this.nodeAttributesAccessor = new NodeAttributesAccessor(node);
+        this.nodeWrapper = new NodeWrapper(node);
     }
 
     public TetrahedralGraph getGraph() {
@@ -20,26 +18,26 @@ public class NodeBase {
     }
 
     public Node getNode() {
-        return node;
+        return nodeWrapper.getNode();
     }
 
-    public NodeAttributesAccessor getNodeAttributesAccessor() {
-        return nodeAttributesAccessor;
+    public NodeWrapper getNodeAttributesAccessor() {
+        return nodeWrapper;
     }
 
     public String getSymbol() {
-        return nodeAttributesAccessor.getLabel();
+        return nodeWrapper.getLabel();
     }
 
     public String getId() {
-        return node.getId();
+        return nodeWrapper.getNode().getId();
     }
 
     public NodeType getNodeType() {
-        return nodeAttributesAccessor.getNodeType();
+        return nodeWrapper.getNodeType();
     }
 
     public int getLevel() {
-        return nodeAttributesAccessor.getLevel();
+        return nodeWrapper.getLevel();
     }
 }
