@@ -3,6 +3,6 @@ package production;
 import model.TetrahedralGraph;
 
 public interface Production {
-    Integer getProductionId();
+    int getProductionId();
     TetrahedralGraph tryApply(TetrahedralGraph graph);
 }
