@@ -27,7 +27,7 @@ public class Processor {
                 .collect(Collectors.toList());
 
         for (Production p : productionStream) {
-            graph = p.tryApply(graph);
+            p.tryApply(graph);
         }
 
         return graph;
