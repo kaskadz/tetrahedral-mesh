@@ -15,7 +15,7 @@ public class InteriorNode extends NodeBase {
     }
 
     public Optional<String> getParentId() {
-        return StreamUtils.asStream(getNode().getNeighborNodeIterator())
+        return getNode().neighborNodes()
                 .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.INTERIOR)
                 .filter(x -> x.getLevel() == (getLevel() - 1))
@@ -29,7 +29,7 @@ public class InteriorNode extends NodeBase {
     }
 
     public Optional<String> getChildId() {
-        return StreamUtils.asStream(getNode().getNeighborNodeIterator())
+        return getNode().neighborNodes()
                 .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.INTERIOR)
                 .filter(x -> x.getLevel() == (getLevel() + 1))
@@ -43,7 +43,7 @@ public class InteriorNode extends NodeBase {
     }
 
     public Stream<String> getSiblingsIds() {
-        return StreamUtils.asStream(getNode().getNeighborNodeIterator())
+        return getNode().neighborNodes()
                 .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.REGULAR)
                 .map(NodeWrapper::getNode)

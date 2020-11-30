@@ -21,7 +21,7 @@ public class GraphNode extends NodeBase {
     }
 
     public Stream<String> getSiblingsIds() {
-        return StreamUtils.asStream(getNode().getNeighborNodeIterator())
+        return getNode().neighborNodes()
                 .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.REGULAR)
                 .map(NodeWrapper::getNode)
@@ -33,7 +33,7 @@ public class GraphNode extends NodeBase {
     }
 
     public Stream<String> getInteriorsIds() {
-        return StreamUtils.asStream(getNode().getNeighborNodeIterator())
+        return getNode().neighborNodes()
                 .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.INTERIOR)
                 .map(NodeWrapper::getNode)

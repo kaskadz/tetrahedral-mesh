@@ -55,7 +55,7 @@ public class TetrahedralGraph {
         node.setAttribute(Attributes.LEVEL, level);
         node.setAttribute(Attributes.NodeType.REGULAR);
         node.setAttribute(Attributes.XY, coordinates.getX(), coordinates.getY());
-        var graphNode = new GraphNode(this, node, coordinates);
+        GraphNode graphNode = new GraphNode(this, node, coordinates);
         graphNodes.put(id, graphNode);
         return graphNode;
     }
@@ -85,7 +85,7 @@ public class TetrahedralGraph {
         node.setAttribute(Attributes.LABEL, symbol);
         node.setAttribute(Attributes.LEVEL, level);
         node.setAttribute(Attributes.NodeType.INTERIOR);
-        var interiorNode = new InteriorNode(this, node, symbol);
+        InteriorNode interiorNode = new InteriorNode(this, node, symbol);
         interiorNodes.put(id, interiorNode);
         return interiorNode;
     }
@@ -96,33 +96,33 @@ public class TetrahedralGraph {
 
     public Edge connectNodes(GraphNode graphNode1, GraphNode graphNode2) {
         String id = generateId();
-        var edge = graph.addEdge(id, graphNode1.getNode(), graphNode2.getNode(), false);
-        edge.addAttribute(Attributes.EdgeType.SAME_LEVEL);
+        Edge edge = graph.addEdge(id, graphNode1.getNode(), graphNode2.getNode(), false);
+        edge.setAttribute(Attributes.EdgeType.SAME_LEVEL);
         return edge;
     }
 
     public Edge connectNodes(InteriorNode interiorNode, GraphNode graphNode) {
         String id = generateId();
-        var edge = graph.addEdge(id, interiorNode.getNode(), graphNode.getNode(), false);
-        edge.addAttribute(Attributes.EdgeType.PARENT);
+        Edge edge = graph.addEdge(id, interiorNode.getNode(), graphNode.getNode(), false);
+        edge.setAttribute(Attributes.EdgeType.PARENT);
         return edge;
     }
 
     public Edge connectNodes(InteriorNode interiorNode1, InteriorNode interiorNode2) {
         String id = generateId();
-        var edge = graph.addEdge(id, interiorNode1.getNode(), interiorNode2.getNode(), false);
-        edge.addAttribute(Attributes.EdgeType.SAME_LEVEL);
+        Edge edge = graph.addEdge(id, interiorNode1.getNode(), interiorNode2.getNode(), false);
+        edge.setAttribute(Attributes.EdgeType.SAME_LEVEL);
         return edge;
     }
 
     public void mergeNodes(GraphNode n1, GraphNode n2) {
-        Set<String> n2Siblings = n2.getSiblingsIds().collect(Collectors.toUnmodifiableSet());
+        Set<String> n2Siblings = n2.getSiblingsIds().collect(Collectors.toSet());
         List<GraphNode> savedSiblings = n1.getSiblings()
                 .filter(x -> !x.getId().equals(n2.getId()))
                 .filter(x -> !n2Siblings.contains(x.getId()))
                 .collect(Collectors.toList());
 
-        Set<String> n2Interiors = n2.getInteriorsIds().collect(Collectors.toUnmodifiableSet());
+        Set<String> n2Interiors = n2.getInteriorsIds().collect(Collectors.toSet());
         List<InteriorNode> savedInteriors = n1.getInteriors()
                 .filter(x -> !n2Interiors.contains(x.getId()))
                 .collect(Collectors.toList());
