@@ -16,6 +16,7 @@ public class App {
     };
 
     public static void main(String[] args) {
+        System.setProperty("org.graphstream.ui", "swing");
         BasicConfigurator.configure();
         Parameters parameters = Parameters.readArgs(args);
 

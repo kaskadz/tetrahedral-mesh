@@ -24,17 +24,18 @@ public class TetrahedralGraph {
 
     public void displayLevel(int level) {
         TetrahedralGraph view = new TetrahedralGraph();
-        for (GraphNode n : graphNodes.values()) {
-            if (n.getLevel() == level) {
-                view.insertGraphNode(
-                        n.getId(),
-                        n.getLevel(),
-                        n.getSymbol(),
-                        n.getCoordinates()
-                );
-            }
-        }
-        for (Edge edge: this.graph.getEdgeSet()) {
+        graphNodes.values()
+                .stream()
+                .filter(n -> n.getLevel() == level)
+                .forEach(n-> {
+                    view.insertGraphNode(
+                            n.getId(),
+                            n.getLevel(),
+                            n.getSymbol(),
+                            n.getCoordinates()
+                    );
+                });
+        this.graph.edges().forEach(edge -> {
             try {
                 view.getGraph()
                         .addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
@@ -42,9 +43,7 @@ public class TetrahedralGraph {
             catch(Exception e) {
                 // "Not great not terrible"
             }
-        }
-
-
+        });
         view.graph.display();
     }
 
