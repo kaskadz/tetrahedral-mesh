@@ -28,19 +28,19 @@ public class InteriorNode extends NodeBase {
         return getParentId().map(x -> getGraph().getInteriorNode(x));
     }
 
-    public Optional<String> getChildId() {
+    public Stream<String> getChildrenIds() {
         return getNode().neighborNodes()
                 .map(NodeWrapper::new)
                 .filter(x -> x.getNodeType() == NodeType.INTERIOR)
                 .filter(x -> x.getLevel() == (getLevel() + 1))
                 .map(NodeWrapper::getNode)
-                .map(Element::getId)
-                .findFirst();
+                .map(Element::getId);
     }
 
-    public Optional<InteriorNode> getChild() {
-        return getChildId().map(x -> getGraph().getInteriorNode(x));
+    public Stream<InteriorNode> getChildren() {
+        return getChildrenIds().map(x -> getGraph().getInteriorNode(x));
     }
+
 
     public Stream<String> getSiblingsIds() {
         return getNode().neighborNodes()
