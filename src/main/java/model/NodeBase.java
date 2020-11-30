@@ -33,6 +33,10 @@ public class NodeBase {
         return nodeWrapper.getLabel();
     }
 
+    public void setSymbol(String symbol){
+        nodeWrapper.setLabel(symbol);
+    }
+
     public String getId() {
         return nodeWrapper.getNode().getId();
     }

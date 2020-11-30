@@ -5,16 +5,18 @@ import org.apache.log4j.BasicConfigurator;
 import processing.Initializer;
 import processing.Processor;
 import production.Production;
+import production.Production1;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class App {
     private static final Logger log = Logger.getLogger(App.class.getName());
-    private static final Production[] productions = {
+    private static final Production[] productions = { new Production1()
     };
 
     public static void main(String[] args) {
+        System.setProperty("org.graphstream.ui", "swing");
         BasicConfigurator.configure();
         Parameters parameters = Parameters.readArgs(args);
 
@@ -27,6 +29,6 @@ public class App {
 
         graph = processor.applyProductions(graph, parameters.productionIds);
 
-        graph.displayLevel(0);
+        graph.displayLevel(parameters.recursionLevel);
     }
 }
