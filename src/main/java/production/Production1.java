@@ -20,6 +20,7 @@ public class Production1 implements Production {
     private void applyProduction(TetrahedralGraph graph, InteriorNode rootInteriorNode){
         rootInteriorNode.setSymbol("e");
         int subgraphLevel = rootInteriorNode.getLevel() + 1;
+
         GraphNode topLeft = graph.insertGraphNode(subgraphLevel, "E", new Point2d(-1, 1));
         GraphNode topRight = graph.insertGraphNode(subgraphLevel, "E", new Point2d(1, 1));
         GraphNode bottomLeft = graph.insertGraphNode(subgraphLevel, "E", new Point2d(-1, -1));
@@ -35,6 +36,8 @@ public class Production1 implements Production {
         graph.connectNodes(topRight, bottomRight);
         graph.connectNodes(bottomRight, bottomLeft);
         graph.connectNodes(bottomLeft, topLeft);
+
+        graph.connectNodes(rootInteriorNode, center);
     }
 
     private Optional<InteriorNode> leftProductionSideRoot(TetrahedralGraph graph){
