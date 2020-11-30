@@ -16,7 +16,7 @@ public class TetrahedralGraph {
     private final Map<String, InteriorNode> interiorNodes = new HashMap<>();
 
     public TetrahedralGraph() {
-        graph = new SingleGraph("tetrahedralGraph");
+        graph = new SingleGraph(generateId());
     }
 
     public Graph getGraph() {
@@ -161,7 +161,7 @@ public class TetrahedralGraph {
         return graphNode;
     }
 
-    private String generateId() {
+    private static String generateId() {
         return UUID.randomUUID().toString();
     }
 }
