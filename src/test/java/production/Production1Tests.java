@@ -10,14 +10,13 @@ import processing.Initializer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Production1Tests {
+public class Production1Tests extends AbstractProductionTest {
     private final Production sut = new Production1();
 
     @Test
@@ -83,11 +82,5 @@ public class Production1Tests {
         }));
 
         return invalidGraphs.stream();
-    }
-
-    private static TetrahedralGraph initializeGraph(Consumer<TetrahedralGraph> g) {
-        TetrahedralGraph graph = new TetrahedralGraph();
-        g.accept(graph);
-        return graph;
     }
 }
