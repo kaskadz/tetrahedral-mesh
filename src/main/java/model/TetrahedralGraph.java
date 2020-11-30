@@ -1,6 +1,7 @@
 package model;
 
 import common.Attributes;
+import common.NodeType;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -15,11 +16,19 @@ public class TetrahedralGraph {
     private final Map<String, InteriorNode> interiorNodes = new HashMap<>();
 
     public TetrahedralGraph() {
-        graph = new SingleGraph("tetrahedralGraph");
+        graph = new SingleGraph(generateId());
     }
 
     public Graph getGraph() {
         return graph;
+    }
+
+    public Collection<GraphNode> getGraphNodes() {
+        return this.graphNodes.values();
+    }
+
+    public Collection<InteriorNode> getInteriorNodes() {
+        return this.interiorNodes.values();
     }
 
     public void displayLevel(int level) {
@@ -27,7 +36,7 @@ public class TetrahedralGraph {
         graphNodes.values()
                 .stream()
                 .filter(n -> n.getLevel() == level)
-                .forEach(n-> {
+                .forEach(n -> {
                     view.insertGraphNode(
                             n.getId(),
                             n.getLevel(),
@@ -39,24 +48,23 @@ public class TetrahedralGraph {
             try {
                 view.getGraph()
                         .addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 // "Not great not terrible"
             }
         });
         view.graph.display();
     }
 
-    private GraphNode insertGraphNode(String id, int level, String symbol, Point2d coordinates){
-        Node node = graph.addNode(id);
-        node.setAttribute(Attributes.FROZEN_LAYOUT);
-        node.setAttribute(Attributes.LABEL, symbol);
-        node.setAttribute(Attributes.LEVEL, level);
-        node.setAttribute(Attributes.NodeType.REGULAR);
-        node.setAttribute(Attributes.XY, coordinates.getX(), coordinates.getY());
-        GraphNode graphNode = new GraphNode(this, node, coordinates);
-        graphNodes.put(id, graphNode);
-        return graphNode;
+    public Optional<NodeType> getNodeType(String id) {
+        if (graphNodes.containsKey(id)) {
+            return Optional.of(NodeType.REGULAR);
+        }
+
+        if (interiorNodes.containsKey(id)) {
+            return Optional.of(NodeType.INTERIOR);
+        }
+
+        return Optional.empty();
     }
 
     public GraphNode insertGraphNode(int level, String symbol, Point2d coordinates) {
@@ -74,7 +82,7 @@ public class TetrahedralGraph {
     }
 
     public void removeGraphNode(GraphNode graphNode) {
-        graph.removeNode(graphNode.getId());
+        removeGraphNode(graphNode.getId());
     }
 
     public InteriorNode insertInteriorNode(int level, String symbol) {
@@ -91,6 +99,15 @@ public class TetrahedralGraph {
 
     public InteriorNode getInteriorNode(String id) {
         return interiorNodes.get(id);
+    }
+
+    public void removeInteriorNode(String id) {
+        graphNodes.remove(id);
+        graph.removeNode(id);
+    }
+
+    public void removeInteriorNode(InteriorNode interiorNode) {
+        removeInteriorNode(interiorNode.getId());
     }
 
     public Edge connectNodes(GraphNode graphNode1, GraphNode graphNode2) {
@@ -132,15 +149,19 @@ public class TetrahedralGraph {
         savedInteriors.forEach(x -> connectNodes(x, n2));
     }
 
-    private String generateId() {
+    private GraphNode insertGraphNode(String id, int level, String symbol, Point2d coordinates) {
+        Node node = graph.addNode(id);
+        node.setAttribute(Attributes.FROZEN_LAYOUT);
+        node.setAttribute(Attributes.LABEL, symbol);
+        node.setAttribute(Attributes.LEVEL, level);
+        node.setAttribute(Attributes.NodeType.REGULAR);
+        node.setAttribute(Attributes.XY, coordinates.getX(), coordinates.getY());
+        GraphNode graphNode = new GraphNode(this, node, coordinates);
+        graphNodes.put(id, graphNode);
+        return graphNode;
+    }
+
+    private static String generateId() {
         return UUID.randomUUID().toString();
-    }
-
-    public Collection<GraphNode> getGraphNodes(){
-        return this.graphNodes.values();
-    }
-
-    public Collection<InteriorNode> getInteriorNodes(){
-        return this.interiorNodes.values();
     }
 }
