@@ -81,6 +81,8 @@ public class Production1Tests extends AbstractProductionTest {
             g.insertGraphNode(0, "E", new Point2d(1.0, 1.0));
         }));
 
+        // TODO: add more cases
+
         return invalidGraphs.stream();
     }
 }
