@@ -14,7 +14,7 @@ public class NodeWrapper {
     }
 
     public int getLevel() {
-        return node.getAttribute(Attributes.LEVEL);
+        return (int) node.getAttribute(Attributes.LEVEL);
     }
 
     public NodeType getNodeType() {
@@ -30,6 +30,6 @@ public class NodeWrapper {
     }
 
     public String getLabel() {
-        return node.getAttribute(Attributes.LABEL);
+        return (String) node.getAttribute(Attributes.LABEL);
     }
 }

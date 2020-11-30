@@ -80,21 +80,21 @@ public class TetrahedralGraph {
     public Edge connectNodes(GraphNode graphNode1, GraphNode graphNode2) {
         String id = generateId();
         Edge edge = graph.addEdge(id, graphNode1.getNode(), graphNode2.getNode(), false);
-        edge.addAttribute(Attributes.EdgeType.SAME_LEVEL);
+        edge.setAttribute(Attributes.EdgeType.SAME_LEVEL);
         return edge;
     }
 
     public Edge connectNodes(InteriorNode interiorNode, GraphNode graphNode) {
         String id = generateId();
         Edge edge = graph.addEdge(id, interiorNode.getNode(), graphNode.getNode(), false);
-        edge.addAttribute(Attributes.EdgeType.PARENT);
+        edge.setAttribute(Attributes.EdgeType.PARENT);
         return edge;
     }
 
     public Edge connectNodes(InteriorNode interiorNode1, InteriorNode interiorNode2) {
         String id = generateId();
         Edge edge = graph.addEdge(id, interiorNode1.getNode(), interiorNode2.getNode(), false);
-        edge.addAttribute(Attributes.EdgeType.SAME_LEVEL);
+        edge.setAttribute(Attributes.EdgeType.SAME_LEVEL);
         return edge;
     }
 
