@@ -1,6 +1,7 @@
 package model;
 
 import common.Attributes;
+import common.NodeType;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -27,7 +28,7 @@ public class TetrahedralGraph {
         graphNodes.values()
                 .stream()
                 .filter(n -> n.getLevel() == level)
-                .forEach(n-> {
+                .forEach(n -> {
                     view.insertGraphNode(
                             n.getId(),
                             n.getLevel(),
@@ -39,15 +40,26 @@ public class TetrahedralGraph {
             try {
                 view.getGraph()
                         .addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 // "Not great not terrible"
             }
         });
         view.graph.display();
     }
 
-    private GraphNode insertGraphNode(String id, int level, String symbol, Point2d coordinates){
+    public Optional<NodeType> getNodeType(String id) {
+        if (graphNodes.containsKey(id)) {
+            return Optional.of(NodeType.REGULAR);
+        }
+
+        if (interiorNodes.containsKey(id)) {
+            return Optional.of(NodeType.INTERIOR);
+        }
+
+        return Optional.empty();
+    }
+
+    private GraphNode insertGraphNode(String id, int level, String symbol, Point2d coordinates) {
         Node node = graph.addNode(id);
         node.setAttribute(Attributes.FROZEN_LAYOUT);
         node.setAttribute(Attributes.LABEL, symbol);
@@ -136,11 +148,11 @@ public class TetrahedralGraph {
         return UUID.randomUUID().toString();
     }
 
-    public Collection<GraphNode> getGraphNodes(){
+    public Collection<GraphNode> getGraphNodes() {
         return this.graphNodes.values();
     }
 
-    public Collection<InteriorNode> getInteriorNodes(){
+    public Collection<InteriorNode> getInteriorNodes() {
         return this.interiorNodes.values();
     }
 }
