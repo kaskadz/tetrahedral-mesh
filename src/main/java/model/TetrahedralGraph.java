@@ -23,6 +23,14 @@ public class TetrahedralGraph {
         return graph;
     }
 
+    public Collection<GraphNode> getGraphNodes() {
+        return this.graphNodes.values();
+    }
+
+    public Collection<InteriorNode> getInteriorNodes() {
+        return this.interiorNodes.values();
+    }
+
     public void displayLevel(int level) {
         TetrahedralGraph view = new TetrahedralGraph();
         graphNodes.values()
@@ -59,18 +67,6 @@ public class TetrahedralGraph {
         return Optional.empty();
     }
 
-    private GraphNode insertGraphNode(String id, int level, String symbol, Point2d coordinates) {
-        Node node = graph.addNode(id);
-        node.setAttribute(Attributes.FROZEN_LAYOUT);
-        node.setAttribute(Attributes.LABEL, symbol);
-        node.setAttribute(Attributes.LEVEL, level);
-        node.setAttribute(Attributes.NodeType.REGULAR);
-        node.setAttribute(Attributes.XY, coordinates.getX(), coordinates.getY());
-        GraphNode graphNode = new GraphNode(this, node, coordinates);
-        graphNodes.put(id, graphNode);
-        return graphNode;
-    }
-
     public GraphNode insertGraphNode(int level, String symbol, Point2d coordinates) {
         String id = generateId();
         return insertGraphNode(id, level, symbol, coordinates);
@@ -86,7 +82,7 @@ public class TetrahedralGraph {
     }
 
     public void removeGraphNode(GraphNode graphNode) {
-        graph.removeNode(graphNode.getId());
+        removeGraphNode(graphNode.getId());
     }
 
     public InteriorNode insertInteriorNode(int level, String symbol) {
@@ -103,6 +99,15 @@ public class TetrahedralGraph {
 
     public InteriorNode getInteriorNode(String id) {
         return interiorNodes.get(id);
+    }
+
+    public void removeInteriorNode(String id) {
+        graphNodes.remove(id);
+        graph.removeNode(id);
+    }
+
+    public void removeInteriorNode(InteriorNode interiorNode) {
+        removeInteriorNode(interiorNode.getId());
     }
 
     public Edge connectNodes(GraphNode graphNode1, GraphNode graphNode2) {
@@ -144,15 +149,19 @@ public class TetrahedralGraph {
         savedInteriors.forEach(x -> connectNodes(x, n2));
     }
 
+    private GraphNode insertGraphNode(String id, int level, String symbol, Point2d coordinates) {
+        Node node = graph.addNode(id);
+        node.setAttribute(Attributes.FROZEN_LAYOUT);
+        node.setAttribute(Attributes.LABEL, symbol);
+        node.setAttribute(Attributes.LEVEL, level);
+        node.setAttribute(Attributes.NodeType.REGULAR);
+        node.setAttribute(Attributes.XY, coordinates.getX(), coordinates.getY());
+        GraphNode graphNode = new GraphNode(this, node, coordinates);
+        graphNodes.put(id, graphNode);
+        return graphNode;
+    }
+
     private String generateId() {
         return UUID.randomUUID().toString();
-    }
-
-    public Collection<GraphNode> getGraphNodes() {
-        return this.graphNodes.values();
-    }
-
-    public Collection<InteriorNode> getInteriorNodes() {
-        return this.interiorNodes.values();
     }
 }
