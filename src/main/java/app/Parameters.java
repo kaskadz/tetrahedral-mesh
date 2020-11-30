@@ -24,7 +24,7 @@ public class Parameters {
             failParsing("Recursion level should not be negative");
         }
 
-        var productionIds = Arrays.stream(args)
+        int[] productionIds = Arrays.stream(args)
                 .skip(1)
                 .mapToInt(Integer::parseInt)
                 .toArray();

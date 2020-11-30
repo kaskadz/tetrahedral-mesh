@@ -20,8 +20,8 @@ public class App {
 
         System.out.println(parameters);
 
-        var initializer = new Initializer();
-        var processor = new Processor(Arrays.asList(productions));
+        Initializer initializer = new Initializer();
+        Processor processor = new Processor(Arrays.asList(productions));
 
         TetrahedralGraph graph = initializer.initializeGraph();
 
