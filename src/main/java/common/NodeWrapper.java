@@ -32,4 +32,8 @@ public class NodeWrapper {
     public String getLabel() {
         return node.getAttribute(Attributes.LABEL);
     }
+
+    public void setLabel(String label){
+        node.setAttribute(Attributes.LABEL, label);
+    }
 }

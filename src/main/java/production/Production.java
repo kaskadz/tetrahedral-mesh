@@ -4,5 +4,5 @@ import model.TetrahedralGraph;
 
 public interface Production {
     int getProductionId();
-    TetrahedralGraph tryApply(TetrahedralGraph graph);
+    boolean tryApply(TetrahedralGraph graph);
 }
