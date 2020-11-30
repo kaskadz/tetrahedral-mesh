@@ -12,7 +12,8 @@ import java.util.logging.Logger;
 
 public class App {
     private static final Logger log = Logger.getLogger(App.class.getName());
-    private static final Production[] productions = { new Production1()
+    private static final Production[] productions = {
+            new Production1()
     };
 
     public static void main(String[] args) {
