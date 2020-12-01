@@ -1,9 +1,9 @@
 package production;
 
-import common.NodeType;
-import model.*;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
+import model.GraphNode;
+import model.InteriorNode;
+import model.Point2d;
+import model.TetrahedralGraph;
 
 import java.util.Optional;
 
@@ -41,12 +41,7 @@ public class Production1 implements Production {
     }
 
     private Optional<InteriorNode> leftProductionSideRoot(TetrahedralGraph graph){
-        for (InteriorNode interNode: graph.getInteriorNodes()) {
-            if(meetsProductionRequirements(interNode)){
-                return Optional.of(interNode);
-            }
-        }
-        return Optional.empty();
+        return graph.getInteriorNodes().stream().filter(this::meetsProductionRequirements).findFirst();
     }
 
     @Override

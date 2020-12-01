@@ -6,7 +6,7 @@ import common.StreamUtils;
 import org.graphstream.graph.Element;
 import org.graphstream.graph.Node;
 
-import java.util.stream.Stream;
+import java.util.Iterator;
 
 public class NodeBase {
     private final TetrahedralGraph graph;
@@ -25,7 +25,7 @@ public class NodeBase {
         return nodeWrapper.getNode();
     }
 
-    public NodeWrapper getNodeAttributesAccessor() {
+    public NodeWrapper getNodeWrapper() {
         return nodeWrapper;
     }
 
@@ -33,7 +33,7 @@ public class NodeBase {
         return nodeWrapper.getLabel();
     }
 
-    public void setSymbol(String symbol){
+    public void setSymbol(String symbol) {
         nodeWrapper.setLabel(symbol);
     }
 
@@ -49,13 +49,15 @@ public class NodeBase {
         return nodeWrapper.getLevel();
     }
 
-    public Stream<String> getDfsIdsStream() {
+    public Iterator<String> getDfsIterator() {
         return StreamUtils.asStream(getNode().getDepthFirstIterator())
-                .map(Element::getId);
+                .map(Element::getId)
+                .iterator();
     }
 
-    public Stream<String> getBfsIdsStream() {
+    public Iterator<String> getBfsIterator() {
         return StreamUtils.asStream(getNode().getBreadthFirstIterator())
-                .map(Element::getId);
+                .map(Element::getId)
+                .iterator();
     }
 }

@@ -33,7 +33,7 @@ public class NodeWrapper {
         return (String) node.getAttribute(Attributes.LABEL);
     }
 
-    public void setLabel(String label){
+    public void setLabel(String label) {
         node.setAttribute(Attributes.LABEL, label);
     }
 }
