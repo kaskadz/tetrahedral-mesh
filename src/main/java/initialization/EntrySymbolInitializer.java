@@ -1,8 +1,8 @@
-package processing;
+package initialization;
 
 import model.TetrahedralGraph;
 
-public class Initializer {
+public class EntrySymbolInitializer implements Initializer {
     public TetrahedralGraph initializeGraph() {
         TetrahedralGraph graph = new TetrahedralGraph();
 

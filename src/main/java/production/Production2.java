@@ -5,39 +5,59 @@ import model.InteriorNode;
 import model.Point2d;
 import model.TetrahedralGraph;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Production2 implements Production{
+public class Production2 extends AbstractProduction {
     @Override
     public int getProductionId() {
         return 2;
     }
 
-    private boolean meetsProductionRequirements(InteriorNode node){
+    @Override
+    public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
+        if (!interiorNode.getSymbol().equals("I")) {
+            throwProductionApplicationException("Invalid interior node");
+        }
+
+        if (!graphNodeList.isEmpty()) {
+            throwProductionApplicationException("No graph nodes expected");
+        }
+
+        if (!meetsProductionRequirements(interiorNode)) {
+            throwProductionApplicationException("Invalid interior node");
+        }
+
+        applyProduction(graph, interiorNode);
+    }
+
+    private boolean meetsProductionRequirements(InteriorNode node) {
         if (!node.getSymbol().equals("I"))
             return false;
         List<GraphNode> gns = node.getSiblings().collect(Collectors.toList());
-        if(gns.size() != 4)
+        if (gns.size() != 4)
             return false;
-        for (GraphNode oneNode : gns){
+        for (GraphNode oneNode : gns) {
             Set<GraphNode> oneSet = new HashSet<>();
             oneSet.addAll(oneNode
                     .getSiblings()
                     .filter(gns::contains)
                     .collect(Collectors.toList()));
             Set<GraphNode> otherSet = new HashSet<>();
-            for (GraphNode otherNode: gns){
+            for (GraphNode otherNode : gns) {
                 otherSet.addAll(otherNode
                         .getSiblings()
                         .filter(gns::contains)
                         .collect(Collectors.toList()));
             }
             oneSet.retainAll(otherSet);
-            if(oneSet.size() != 2)
+            if (oneSet.size() != 2)
                 return false;
         }
-        for (GraphNode oneNode : gns){
+        for (GraphNode oneNode : gns) {
             Optional<Boolean> properSiblings = oneNode.getSiblings().filter(gns::contains)
                     .map(otherNode ->
                             ((otherNode.getCoordinates().getX() ==
@@ -46,13 +66,13 @@ public class Production2 implements Production{
                                             oneNode.getCoordinates().getY())
                             ))
                     .reduce(Boolean::logicalAnd);
-            if(!(properSiblings.isPresent() && (properSiblings.get())))
+            if (!(properSiblings.isPresent() && (properSiblings.get())))
                 return false;
         }
         return true;
     }
 
-    private void applyProduction(TetrahedralGraph graph, InteriorNode rootInteriorNode){
+    private void applyProduction(TetrahedralGraph graph, InteriorNode rootInteriorNode) {
         rootInteriorNode.setSymbol("i");
         int subgraphLevel = rootInteriorNode.getLevel() + 1;
 
@@ -82,7 +102,7 @@ public class Production2 implements Production{
         GraphNode center = graph.insertGraphNode(
                 subgraphLevel,
                 "E",
-                new Point2d((left+right)/2, (top+bottom)/2));
+                new Point2d((left + right) / 2, (top + bottom) / 2));
         GraphNode topLeft = graph.insertGraphNode(
                 subgraphLevel,
                 "E",
@@ -104,19 +124,19 @@ public class Production2 implements Production{
         GraphNode midLeft = graph.insertGraphNode(
                 subgraphLevel,
                 "E",
-                new Point2d(left, (top+bottom)/2));
+                new Point2d(left, (top + bottom) / 2));
         GraphNode midRight = graph.insertGraphNode(
                 subgraphLevel,
                 "E",
-                new Point2d(right, (top+bottom)/2));
+                new Point2d(right, (top + bottom) / 2));
         GraphNode midTop = graph.insertGraphNode(
                 subgraphLevel,
                 "E",
-                new Point2d((left+right)/2, top));
+                new Point2d((left + right) / 2, top));
         GraphNode midBottom = graph.insertGraphNode(
                 subgraphLevel,
                 "E",
-                new Point2d((left+right)/2, bottom));
+                new Point2d((left + right) / 2, bottom));
 
         InteriorNode upperLeft = graph.insertInteriorNode(
                 subgraphLevel,
@@ -131,10 +151,10 @@ public class Production2 implements Production{
                 subgraphLevel,
                 "I");
 
-        graph.connectNodes(rootInteriorNode,upperLeft);
-        graph.connectNodes(rootInteriorNode,upperRight);
-        graph.connectNodes(rootInteriorNode,lowerRight);
-        graph.connectNodes(rootInteriorNode,lowerLeft);
+        graph.connectNodes(rootInteriorNode, upperLeft);
+        graph.connectNodes(rootInteriorNode, upperRight);
+        graph.connectNodes(rootInteriorNode, lowerRight);
+        graph.connectNodes(rootInteriorNode, lowerLeft);
 
         graph.connectNodes(upperLeft, topLeft);
         graph.connectNodes(upperLeft, midTop);
@@ -156,39 +176,18 @@ public class Production2 implements Production{
         graph.connectNodes(lowerLeft, midBottom);
         graph.connectNodes(lowerLeft, bottomLeft);
 
-        graph.connectNodes(topLeft,midTop);
-        graph.connectNodes(midTop,topRight);
-        graph.connectNodes(topRight,midRight);
-        graph.connectNodes(midRight,bottomRight);
-        graph.connectNodes(bottomRight,midBottom);
-        graph.connectNodes(midBottom,bottomLeft);
-        graph.connectNodes(bottomLeft,midLeft);
-        graph.connectNodes(midLeft,topLeft);
+        graph.connectNodes(topLeft, midTop);
+        graph.connectNodes(midTop, topRight);
+        graph.connectNodes(topRight, midRight);
+        graph.connectNodes(midRight, bottomRight);
+        graph.connectNodes(bottomRight, midBottom);
+        graph.connectNodes(midBottom, bottomLeft);
+        graph.connectNodes(bottomLeft, midLeft);
+        graph.connectNodes(midLeft, topLeft);
 
         graph.connectNodes(center, midTop);
         graph.connectNodes(center, midRight);
         graph.connectNodes(center, midBottom);
         graph.connectNodes(center, midLeft);
-
-
-    }
-
-    private Optional<InteriorNode> leftProductionSideRoot(TetrahedralGraph graph){
-        for (InteriorNode interNode: graph.getInteriorNodes()) {
-            if(meetsProductionRequirements(interNode)){
-                return Optional.of(interNode);
-            }
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean tryApply(TetrahedralGraph graph) {
-        Optional<InteriorNode> productionRoot = leftProductionSideRoot(graph);
-        if(productionRoot.isPresent()){
-            applyProduction(graph, productionRoot.get());
-            return true;
-        }
-        return false;
     }
 }

@@ -5,21 +5,27 @@ import model.InteriorNode;
 import model.Point2d;
 import model.TetrahedralGraph;
 
-import java.util.Optional;
+import java.util.List;
 
-public class Production1 implements Production {
+public class Production1 extends AbstractProduction {
     @Override
     public int getProductionId() {
         return 1;
     }
 
-    private boolean meetsProductionRequirements(InteriorNode node){
-        return node.getSymbol().equals("E");
-    }
+    @Override
+    public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
+        if (!interiorNode.getSymbol().equals("E")) {
+            throwProductionApplicationException("Invalid interior node");
+        }
 
-    private void applyProduction(TetrahedralGraph graph, InteriorNode rootInteriorNode){
-        rootInteriorNode.setSymbol("e");
-        int subgraphLevel = rootInteriorNode.getLevel() + 1;
+        if (!graphNodeList.isEmpty()) {
+            throwProductionApplicationException("No graph nodes expected");
+        }
+
+        interiorNode.setSymbol("e");
+
+        int subgraphLevel = interiorNode.getLevel() + 1;
 
         GraphNode topLeft = graph.insertGraphNode(subgraphLevel, "E", new Point2d(-1, 1));
         GraphNode topRight = graph.insertGraphNode(subgraphLevel, "E", new Point2d(1, 1));
@@ -37,20 +43,6 @@ public class Production1 implements Production {
         graph.connectNodes(bottomRight, bottomLeft);
         graph.connectNodes(bottomLeft, topLeft);
 
-        graph.connectNodes(rootInteriorNode, center);
-    }
-
-    private Optional<InteriorNode> leftProductionSideRoot(TetrahedralGraph graph){
-        return graph.getInteriorNodes().stream().filter(this::meetsProductionRequirements).findFirst();
-    }
-
-    @Override
-    public boolean tryApply(TetrahedralGraph graph) {
-        Optional<InteriorNode> productionRoot = leftProductionSideRoot(graph);
-        if(productionRoot.isPresent()){
-            applyProduction(graph, productionRoot.get());
-            return true;
-        }
-        return false;
+        graph.connectNodes(interiorNode, center);
     }
 }

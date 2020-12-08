@@ -1,22 +1,21 @@
 package app;
 
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class Parameters {
     private static final Logger log = Logger.getLogger(Parameters.class.getName());
 
     public final int recursionLevel;
-    public final int[] productionIds;
+    public final String processorId;
 
-    public Parameters(int recursionLevel, int[] productionIds) {
+    public Parameters(int recursionLevel, String processorId) {
         this.recursionLevel = recursionLevel;
-        this.productionIds = productionIds;
+        this.processorId = processorId;
     }
 
     public static Parameters readArgs(String[] args) {
         if (args.length <= 0) {
-            failParsing("Recursion level should be provided");
+            failParsing("Processor id should be provided");
         }
 
         int recursionLevel = Integer.parseInt(args[0]);
@@ -24,16 +23,12 @@ public class Parameters {
             failParsing("Recursion level should not be negative");
         }
 
-        int[] productionIds = Arrays.stream(args)
-                .skip(1)
-                .mapToInt(Integer::parseInt)
-                .toArray();
-
-        if (productionIds.length <=0) {
-            failParsing("No productions were provided");
+        if (args.length < 2) {
+            failParsing("Processor id should be provided");
         }
+        String processorId = args[1];
 
-        return new Parameters(recursionLevel, productionIds);
+        return new Parameters(recursionLevel, processorId);
     }
 
     private static void failParsing(String errorMessage) {
@@ -43,9 +38,6 @@ public class Parameters {
 
     @Override
     public String toString() {
-        return "Parameters{" +
-                "recursionLevel=" + recursionLevel +
-                ", productionIds=" + Arrays.toString(productionIds) +
-                '}';
+        return String.format("Parameters{recursionLevel=%d, processorId='%s'}", recursionLevel, processorId);
     }
 }
