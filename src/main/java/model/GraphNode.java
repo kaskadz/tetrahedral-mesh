@@ -2,7 +2,6 @@ package model;
 
 import common.NodeType;
 import common.NodeWrapper;
-import common.StreamUtils;
 import org.graphstream.graph.Element;
 import org.graphstream.graph.Node;
 
