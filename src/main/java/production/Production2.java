@@ -90,15 +90,14 @@ public class Production2 extends AbstractProduction {
                 .get();
         double bottom = corners
                 .stream()
-                .map(x -> x.getCoordinates().getX())
+                .map(x -> x.getCoordinates().getY())
                 .min(Double::compareTo)
                 .get();
         double top = corners
                 .stream()
-                .map(x -> x.getCoordinates().getX())
+                .map(x -> x.getCoordinates().getY())
                 .max(Double::compareTo)
                 .get();
-
         GraphNode center = graph.insertGraphNode(
                 subgraphLevel,
                 "E",
