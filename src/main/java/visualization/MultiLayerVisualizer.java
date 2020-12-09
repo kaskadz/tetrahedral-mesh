@@ -2,6 +2,7 @@ package visualization;
 
 import common.Attributes;
 import common.CustomPredicates;
+import common.StylesheetReader;
 import model.*;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Element;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MultiLayerVisualizer implements Visualizer {
+    private final String styles = StylesheetReader.readStyleSheet();
 
     @Override
     public void displayGraph(TetrahedralGraph graph) {
@@ -46,6 +48,7 @@ public class MultiLayerVisualizer implements Visualizer {
         Collection<GraphNode> graphNodes = graph.getGraphNodesByLevel(level);
         Collection<InteriorNode> interiorNodes = graph.getInteriorNodesByLevel(level);
         Graph viewGraph = new SingleGraph(String.format("Level %d", level));
+        viewGraph.setAttribute(Attributes.STYLESHEET, styles);
 
         // copy nodes
         graphNodes.forEach(x -> addGraphNode(viewGraph, x));
@@ -79,10 +82,12 @@ public class MultiLayerVisualizer implements Visualizer {
 
     private void addRegularEdge(Graph graph, String edgeId, String node0Id, String node1Id) {
         Edge edge = graph.addEdge(edgeId, node0Id, node1Id);
+        edge.setAttribute(Attributes.CLASS, "regular");
     }
 
     private void addInteriorEdge(Graph graph, String edgeId, String node0Id, String node1Id) {
         Edge edge = graph.addEdge(edgeId, node0Id, node1Id);
+        edge.setAttribute(Attributes.CLASS, "interior");
     }
 
     private void addGraphNode(Graph graph, GraphNode graphNode) {
@@ -92,6 +97,7 @@ public class MultiLayerVisualizer implements Visualizer {
         node.setAttribute(Attributes.XY,
                 graphNode.getCoordinates().getX(),
                 graphNode.getCoordinates().getY());
+        node.setAttribute(Attributes.CLASS, "exterior");
     }
 
     private void addInteriorNode(Graph graph, InteriorNode interiorNode) {
@@ -108,5 +114,7 @@ public class MultiLayerVisualizer implements Visualizer {
         node.setAttribute(Attributes.XY,
                 interiorCoordinates.getX(),
                 interiorCoordinates.getY());
+
+        node.setAttribute(Attributes.CLASS, "interior");
     }
 }
