@@ -5,6 +5,8 @@ import model.TetrahedralGraph;
 import org.apache.log4j.BasicConfigurator;
 import processing.Processor;
 import processing.Processors;
+import visualization.MultiLayerVisualizer;
+import visualization.Visualizer;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -27,7 +29,8 @@ public class App {
 
             TetrahedralGraph graph = processor.processGraph(initialGraph);
 
-            graph.displayLevel(parameters.recursionLevel);
+            Visualizer visualizer = new MultiLayerVisualizer();
+            visualizer.displayGraph(graph);
         } else {
             System.out.println("Available processors:");
             Arrays.stream(Processors.processors).forEach(x -> System.out.printf(" - %s\n", x.getProcessorId()));
