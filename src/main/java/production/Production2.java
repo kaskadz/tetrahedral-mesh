@@ -19,24 +19,14 @@ public class Production2 extends AbstractProduction {
 
     @Override
     public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
-        if (!interiorNode.getSymbol().equals("I")) {
-            throwProductionApplicationException("Invalid interior node");
-        }
-
-        if (!graphNodeList.isEmpty()) {
-            throwProductionApplicationException("No graph nodes expected");
-        }
-
-        if (!meetsProductionRequirements(interiorNode)) {
-            throwProductionApplicationException("Invalid interior node");
-        }
+        verifyInteriorNodeSymbol(interiorNode, "I");
+        verifyGraphNodeListIsEmpty(graphNodeList);
+        verifyInteriorNodeIsValid(interiorNode, this::meetsProductionRequirements);
 
         applyProduction(graph, interiorNode);
     }
 
     private boolean meetsProductionRequirements(InteriorNode node) {
-        if (!node.getSymbol().equals("I"))
-            return false;
         List<GraphNode> gns = node.getSiblings().collect(Collectors.toList());
         if (gns.size() != 4)
             return false;

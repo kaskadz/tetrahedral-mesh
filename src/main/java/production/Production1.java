@@ -15,14 +15,13 @@ public class Production1 extends AbstractProduction {
 
     @Override
     public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
-        if (!interiorNode.getSymbol().equals("E")) {
-            throwProductionApplicationException("Invalid interior node");
-        }
+        verifyInteriorNodeSymbol(interiorNode, "E");
+        verifyGraphNodeListIsEmpty(graphNodeList);
 
-        if (!graphNodeList.isEmpty()) {
-            throwProductionApplicationException("No graph nodes expected");
-        }
+        applyProduction(graph, interiorNode);
+    }
 
+    private void applyProduction(TetrahedralGraph graph, InteriorNode interiorNode) {
         interiorNode.setSymbol("e");
 
         int subgraphLevel = interiorNode.getLevel() + 1;
