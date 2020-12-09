@@ -1,10 +1,10 @@
 package visualization;
 
 import common.Attributes;
-import model.GraphNode;
-import model.InteriorNode;
-import model.Point2d;
-import model.TetrahedralGraph;
+import common.CustomPredicates;
+import model.*;
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Element;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -15,6 +15,7 @@ import org.graphstream.ui.view.Viewer;
 import javax.swing.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MultiLayerVisualizer implements Visualizer {
@@ -46,10 +47,42 @@ public class MultiLayerVisualizer implements Visualizer {
         Collection<InteriorNode> interiorNodes = graph.getInteriorNodesByLevel(level);
         Graph viewGraph = new SingleGraph(String.format("Level %d", level));
 
+        // copy nodes
         graphNodes.forEach(x -> addGraphNode(viewGraph, x));
         interiorNodes.forEach(x -> addInteriorNode(viewGraph, x));
 
+        // copy edges
+        Set<String> graphNodeIdsFromLevel = graphNodes.stream()
+                .map(NodeBase::getId)
+                .collect(Collectors.toSet());
+
+        // interior edges
+        interiorNodes.stream()
+                .map(NodeBase::getNode)
+                .flatMap(Node::edges)
+                .filter(x -> graphNodeIdsFromLevel.contains(x.getNode0().getId()) ||
+                        graphNodeIdsFromLevel.contains(x.getNode1().getId()))
+                .filter(CustomPredicates.distinctByKey(Element::getId))
+                .forEach(x -> addInteriorEdge(viewGraph, x.getId(), x.getNode0().getId(), x.getNode1().getId()));
+
+        // regular edges
+        graphNodes.stream()
+                .map(NodeBase::getNode)
+                .flatMap(Node::edges)
+                .filter(x -> graphNodeIdsFromLevel.contains(x.getNode0().getId()) &&
+                        graphNodeIdsFromLevel.contains(x.getNode1().getId()))
+                .filter(CustomPredicates.distinctByKey(Element::getId))
+                .forEach(x -> addRegularEdge(viewGraph, x.getId(), x.getNode0().getId(), x.getNode1().getId()));
+
         return viewGraph;
+    }
+
+    private void addRegularEdge(Graph graph, String edgeId, String node0Id, String node1Id) {
+        Edge edge = graph.addEdge(edgeId, node0Id, node1Id);
+    }
+
+    private void addInteriorEdge(Graph graph, String edgeId, String node0Id, String node1Id) {
+        Edge edge = graph.addEdge(edgeId, node0Id, node1Id);
     }
 
     private void addGraphNode(Graph graph, GraphNode graphNode) {
