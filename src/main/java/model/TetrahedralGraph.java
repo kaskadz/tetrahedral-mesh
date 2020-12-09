@@ -49,30 +49,6 @@ public class TetrahedralGraph {
         return Math.min(Collections.min(graphNodesByLevel.keySet()), Collections.min(interiorNodesByLevel.keySet()));
     }
 
-    public void displayLevel(int level) {
-        TetrahedralGraph view = new TetrahedralGraph();
-        graphNodes.values()
-                .stream()
-                .filter(n -> n.getLevel() == level)
-                .forEach(n -> {
-                    view.insertGraphNode(
-                            n.getId(),
-                            n.getLevel(),
-                            n.getSymbol(),
-                            n.getCoordinates()
-                    );
-                });
-        this.graph.edges().forEach(edge -> {
-            try {
-                view.getGraph()
-                        .addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
-            } catch (Exception e) {
-                // "Not great not terrible"
-            }
-        });
-        view.graph.display();
-    }
-
     public Optional<NodeType> getNodeType(String id) {
         if (graphNodes.containsKey(id)) {
             return Optional.of(NodeType.REGULAR);
