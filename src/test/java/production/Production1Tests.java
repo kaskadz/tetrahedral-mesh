@@ -1,20 +1,23 @@
 package production;
 
+import common.CustomCollectors;
+import common.ProductionApplicationException;
 import model.InteriorNode;
 import model.Point2d;
 import model.TetrahedralGraph;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import processing.Initializer;
+import initialization.EntrySymbolInitializer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Production1Tests extends AbstractProductionTest {
     private final Production sut = new Production1();
@@ -24,20 +27,21 @@ public class Production1Tests extends AbstractProductionTest {
         // Arrange
         Production sut = new Production1();
 
-        // Assert
+        // Act & Assert
         assertEquals(1, sut.getProductionId());
     }
 
     @Test
     public void shouldApplyOnInitialGraph() {
         // Arrange
-        TetrahedralGraph graph = new Initializer().initializeGraph();
+        TetrahedralGraph graph = new EntrySymbolInitializer().initializeGraph();
+        InteriorNode initialNode = graph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
 
         // Act
-        boolean applied = sut.tryApply(graph);
+        Executable production = () -> sut.apply(graph, initialNode, Collections.emptyList());
 
         // Assert
-        assertTrue(applied);
+        assertDoesNotThrow(production);
     }
 
     @Test
@@ -47,14 +51,14 @@ public class Production1Tests extends AbstractProductionTest {
         InteriorNode initialNode = graph.insertInteriorNode(0, "E");
 
         // Act
-        sut.tryApply(graph);
+        sut.apply(graph, initialNode, Collections.emptyList());
 
         // Assert
         assertThat(initialNode.getSymbol()).isEqualTo("e");
         assertThat(initialNode.getSiblingsIds()).isEmpty();
         assertThat(initialNode.getChildrenIds()).hasSize(1);
 
-        InteriorNode interiorNode = initialNode.getChildren().findFirst().get();
+        InteriorNode interiorNode = initialNode.getChildren().collect(CustomCollectors.toSingle());
         assertThat(interiorNode.getSiblingsIds()).hasSize(4);
 
         // TODO: add siblings check
@@ -64,10 +68,10 @@ public class Production1Tests extends AbstractProductionTest {
     @MethodSource("invalidGraphs")
     public void shouldNotModifyGraphIfNotApplicable(TetrahedralGraph graph) {
         // Act
-        boolean applied = sut.tryApply(graph);
+        Executable production = () -> sut.apply(graph, null, Collections.emptyList());
 
         // Assert
-        assertThat(applied).isFalse();
+        assertThrows(ProductionApplicationException.class, production);
     }
 
     public static Stream<TetrahedralGraph> invalidGraphs() {
