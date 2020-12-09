@@ -16,7 +16,7 @@ public class Parameters {
             failParsing("Processor id should be provided");
         }
 
-        String processorId = args[1];
+        String processorId = args[0];
 
         return new Parameters(processorId);
     }
