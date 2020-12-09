@@ -4,6 +4,6 @@
  - [x] Implement TetrahedralGraph
  - [x] Implement GraphNode
  - [x] Implement InteriorNode
- - [ ] Implement Edges?
- - [ ] Implement Initializer
- - [ ] Implement Processor
+ - [x] Implement Edges?
+ - [x] Implement Initializer
+ - [x] Implement Processor
