@@ -14,6 +14,8 @@ public class TetrahedralGraph {
     private final Graph graph;
     private final Map<String, GraphNode> graphNodes = new HashMap<>();
     private final Map<String, InteriorNode> interiorNodes = new HashMap<>();
+    private final Map<Integer, Set<GraphNode>> graphNodesByLevel = new HashMap<>();
+    private final Map<Integer, Set<InteriorNode>> interiorNodesByLevel = new HashMap<>();
 
     public TetrahedralGraph() {
         graph = new SingleGraph(generateId());
@@ -29,6 +31,22 @@ public class TetrahedralGraph {
 
     public Collection<InteriorNode> getInteriorNodes() {
         return this.interiorNodes.values();
+    }
+
+    public Collection<GraphNode> getGraphNodesByLevel(int level) {
+        return graphNodesByLevel.getOrDefault(level, new HashSet<>());
+    }
+
+    public Collection<InteriorNode> getInteriorNodesByLevel(int level) {
+        return interiorNodesByLevel.getOrDefault(level, new HashSet<>());
+    }
+
+    public int getMaxLevel() {
+        return Math.max(Collections.max(graphNodesByLevel.keySet()), Collections.max(interiorNodesByLevel.keySet()));
+    }
+
+    public int getMinLevel() {
+        return Math.min(Collections.min(graphNodesByLevel.keySet()), Collections.min(interiorNodesByLevel.keySet()));
     }
 
     public void displayLevel(int level) {
@@ -77,12 +95,18 @@ public class TetrahedralGraph {
     }
 
     public void removeGraphNode(String id) {
-        graphNodes.remove(id);
-        graph.removeNode(id);
+        GraphNode graphNode = graphNodes.get(id);
+        removeGraphNode(graphNode);
     }
 
     public void removeGraphNode(GraphNode graphNode) {
-        removeGraphNode(graphNode.getId());
+        int nodeLevel = graphNode.getLevel();
+        graphNodesByLevel
+                .computeIfAbsent(nodeLevel, k -> new HashSet<>())
+                .remove(graphNode);
+
+        graphNodes.remove(graphNode.getId());
+        graph.removeNode(graphNode.getId());
     }
 
     public InteriorNode insertInteriorNode(int level, String symbol) {
@@ -92,8 +116,13 @@ public class TetrahedralGraph {
         node.setAttribute(Attributes.LABEL, symbol);
         node.setAttribute(Attributes.LEVEL, level);
         node.setAttribute(Attributes.NodeType.INTERIOR);
+
         InteriorNode interiorNode = new InteriorNode(this, node, symbol);
         interiorNodes.put(id, interiorNode);
+        interiorNodesByLevel
+                .computeIfAbsent(level, k -> new HashSet<>())
+                .add(interiorNode);
+
         return interiorNode;
     }
 
@@ -102,12 +131,18 @@ public class TetrahedralGraph {
     }
 
     public void removeInteriorNode(String id) {
-        graphNodes.remove(id);
-        graph.removeNode(id);
+        InteriorNode interiorNode = interiorNodes.get(id);
+        removeInteriorNode(interiorNode);
     }
 
     public void removeInteriorNode(InteriorNode interiorNode) {
-        removeInteriorNode(interiorNode.getId());
+        int nodeLevel = interiorNode.getLevel();
+        interiorNodesByLevel
+                .computeIfAbsent(nodeLevel, k -> new HashSet<>())
+                .remove(interiorNode);
+
+        graphNodes.remove(interiorNode.getId());
+        graph.removeNode(interiorNode.getId());
     }
 
     public Edge connectNodes(GraphNode graphNode1, GraphNode graphNode2) {
@@ -156,8 +191,13 @@ public class TetrahedralGraph {
         node.setAttribute(Attributes.LEVEL, level);
         node.setAttribute(Attributes.NodeType.REGULAR);
         node.setAttribute(Attributes.XY, coordinates.getX(), coordinates.getY());
+
         GraphNode graphNode = new GraphNode(this, node, coordinates);
         graphNodes.put(id, graphNode);
+        graphNodesByLevel
+                .computeIfAbsent(level, k -> new HashSet<>())
+                .add(graphNode);
+
         return graphNode;
     }
 

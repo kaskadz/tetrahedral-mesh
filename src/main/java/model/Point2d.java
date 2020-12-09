@@ -1,6 +1,6 @@
 package model;
 
-import java.util.Objects;
+import java.util.*;
 
 public class Point2d {
     private final double x;
@@ -31,5 +31,16 @@ public class Point2d {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    public static Optional<Point2d> center(List<Point2d> points) {
+        OptionalDouble newX = points.stream().mapToDouble(x -> x.x).average();
+        OptionalDouble newY = points.stream().mapToDouble(x -> x.y).average();
+
+        if (newX.isPresent() && newY.isPresent()) {
+            return Optional.of(new Point2d(newX.getAsDouble(), newY.getAsDouble()));
+        } else {
+            return Optional.empty();
+        }
     }
 }

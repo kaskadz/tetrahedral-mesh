@@ -1,0 +1,30 @@
+/* Reference: https://graphstream-project.org/doc/Advanced-Concepts/GraphStream-CSS-Reference/ */
+graph {
+    fill-color: #edffe0;
+}
+
+node {
+    stroke-mode: plain;
+    stroke-width: 2px;
+    text-size: 12px;
+    text-style: bold;
+}
+
+node.interior {
+    fill-color: #f69546;
+    size: 30px;
+}
+
+node.exterior {
+    fill-color: #9aba59;
+    size: 25px;
+}
+
+edge.regular {
+    size: 3px;
+}
+
+edge.interior {
+    size: 2px;
+    fill-color: #4a7eba;
+}
