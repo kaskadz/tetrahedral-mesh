@@ -9,7 +9,7 @@ For each production implementation assignment, please implement your production 
 - Make it implement `Production` interface.
 - Add it to `Productions.productions` array.
 - Unit-test the production.
-- You can implement a processor to test some production sequence (name it `AssignmentNProcessor` where `N` is a number of production that you are testing).
+- You can implement a processor to test some production sequence (name it `AssignmentNProcessor` where `N` is a number of assignment that you are testing).
 
 ### Assignments from A to D
 For each of these assignments, please implement the productions that are not already there, then please implement a proper processor according to the following guidelines:
