@@ -1,7 +1,7 @@
 package model;
 
-import common.NodeWrapper;
 import common.NodeType;
+import common.NodeWrapper;
 import common.StreamUtils;
 import org.graphstream.graph.Element;
 import org.graphstream.graph.Node;
@@ -59,5 +59,18 @@ public class NodeBase {
         return StreamUtils.asStream(getNode().getBreadthFirstIterator())
                 .map(Element::getId)
                 .iterator();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NodeBase)) return false;
+        NodeBase nodeBase = (NodeBase) o;
+        return getId().equals(nodeBase.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
     }
 }
