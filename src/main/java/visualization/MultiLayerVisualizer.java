@@ -117,7 +117,7 @@ public class MultiLayerVisualizer implements Visualizer {
                 interiorCoordinates.getY());
 
         Optional<String> interiorNodeIconClass = getInteriorNodeIconClass(interiorNode);
-        interiorNodeIconClass.ifPresent(s -> node.setAttribute("ui.icon", s));
+        interiorNodeIconClass.ifPresent(s -> node.setAttribute(Attributes.ICON, s));
 
         node.setAttribute(Attributes.CLASS, "interior");
     }
