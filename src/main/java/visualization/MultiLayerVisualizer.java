@@ -2,7 +2,7 @@ package visualization;
 
 import common.Attributes;
 import common.CustomPredicates;
-import common.StylesheetReader;
+import common.ResourceLoader;
 import model.*;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Element;
@@ -16,11 +16,12 @@ import org.graphstream.ui.view.Viewer;
 import javax.swing.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MultiLayerVisualizer implements Visualizer {
-    private final String styles = StylesheetReader.readStyleSheet();
+    private final String styles = ResourceLoader.readStyleSheet();
 
     @Override
     public void displayGraph(TetrahedralGraph graph) {
@@ -115,6 +116,28 @@ public class MultiLayerVisualizer implements Visualizer {
                 interiorCoordinates.getX(),
                 interiorCoordinates.getY());
 
+        Optional<String> interiorNodeIconClass = getInteriorNodeIconClass(interiorNode);
+        interiorNodeIconClass.ifPresent(s -> node.setAttribute(Attributes.ICON, s));
+
         node.setAttribute(Attributes.CLASS, "interior");
+    }
+
+    private Optional<String> getInteriorNodeIconClass(InteriorNode interiorNode) {
+        boolean extendsDown = interiorNode.getChildrenIds().findAny().isPresent();
+        boolean extendsUp = interiorNode.getParentId().isPresent();
+
+        if (extendsDown && extendsUp) {
+            return Optional.of(ResourceLoader.getUpDownIconPath().toString());
+        }
+
+        if (extendsDown) {
+            return Optional.of(ResourceLoader.getDownIconPath().toString());
+        }
+
+        if (extendsUp) {
+            return Optional.of(ResourceLoader.getUpIconPath().toString());
+        }
+
+        return Optional.empty();
     }
 }
