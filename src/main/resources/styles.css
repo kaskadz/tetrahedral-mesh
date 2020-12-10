@@ -13,6 +13,8 @@ node {
 node.interior {
     fill-color: #f69546;
     size: 30px;
+    icon-mode: at-left;
+    icon: dyn-icon;
 }
 
 node.exterior {
