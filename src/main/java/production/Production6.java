@@ -1,11 +1,15 @@
 package production;
 
+import common.NodeType;
 import model.GraphNode;
 import model.InteriorNode;
 import model.Point2d;
 import model.TetrahedralGraph;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Production6 extends AbstractProduction {
@@ -24,8 +28,41 @@ public class Production6 extends AbstractProduction {
     }
 
     private boolean meetsProductionRequirements(InteriorNode node) {
-        // TODO:
-        // validate nodes
+        List<GraphNode> cornerNodes = node.getSiblings().collect(Collectors.toList());
+
+        if (cornerNodes.size() != 4) return false;
+
+        // Get nodes between corner nodes
+        Set<GraphNode> nodesBetweenCornerNodes = new HashSet<>();
+        for (GraphNode cornerNode : cornerNodes) {
+            nodesBetweenCornerNodes.addAll(cornerNode.getSiblings().collect(Collectors.toList()));
+        }
+        nodesBetweenCornerNodes.remove(node);  // Remove interior node
+        for (GraphNode cornerNode : cornerNodes) {
+            nodesBetweenCornerNodes.remove(cornerNode);  // Remove corner nodes
+        }
+
+        if (nodesBetweenCornerNodes.size() != 4) return false; // There are exactly 4 nodes between corner nodes
+
+        // Check if nodesBetweenCornerNodes are placed correctly
+        for (GraphNode middleNode : nodesBetweenCornerNodes) {
+            List<GraphNode> middleNodeSiblings = middleNode.getSiblings().collect(Collectors.toList());
+
+            System.out.println("Node between corner nodes have " + middleNodeSiblings.size() + " nodes");
+            // TODO: This is broken (???), sometimes it returns 3
+            // if (nodeBetweenSiblings.size() != 2) return false;  // nodeBetweenCornerNodes must have exactly 2 siblings
+
+            GraphNode node0 = middleNodeSiblings.get(0);
+            GraphNode node1 = middleNodeSiblings.get(1);
+
+            double x = (node0.getCoordinates().getX() + node1.getCoordinates().getX()) / 2;
+            double y = (node0.getCoordinates().getY() + node1.getCoordinates().getY()) / 2;
+
+            // This cannot be checked because of error above
+            // if (nodeBetweenCornerNodes.getCoordinates().getX() != x || nodeBetweenCornerNodes.getCoordinates().getX() != y)
+            //    return false;
+        }
+
         return true;
     }
 
