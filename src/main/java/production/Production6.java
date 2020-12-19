@@ -32,36 +32,41 @@ public class Production6 extends AbstractProduction {
 
         if (cornerNodes.size() != 4) return false;
 
-        // Get nodes between corner nodes
-        Set<GraphNode> nodesBetweenCornerNodes = new HashSet<>();
+        int numOfCorrectlyPlacedNodesBetweenCornerNodes = 0;
+
+        int i = 0;
         for (GraphNode cornerNode : cornerNodes) {
-            nodesBetweenCornerNodes.addAll(cornerNode.getSiblings().collect(Collectors.toList()));
+            for (GraphNode otherCornerNode : cornerNodes.subList(i, cornerNodes.size())) {
+                double x = (cornerNode.getCoordinates().getX() + otherCornerNode.getCoordinates().getX()) / 2;
+                double y = (cornerNode.getCoordinates().getY() + otherCornerNode.getCoordinates().getY()) / 2;
+
+                boolean siblingOfCornerNode = false;
+                boolean siblingOfOtherCornerNode = false;
+
+                List<GraphNode> cornerNodeSiblings = cornerNode.getSiblings().collect(Collectors.toList());
+                for (GraphNode sibling : cornerNodeSiblings) {
+                    // Calculated node is a sibling of 'cornerNode'
+                    if (sibling.getCoordinates().getX() == x && sibling.getCoordinates().getY() == y) {
+                        siblingOfCornerNode = true;
+                    }
+                }
+
+                List<GraphNode> otherCornerNodeSiblings = otherCornerNode.getSiblings().collect(Collectors.toList());
+                for (GraphNode sibling : otherCornerNodeSiblings) {
+                    // Calculated node is a sibling of 'otherCornerNode'
+                    if (sibling.getCoordinates().getX() == x && sibling.getCoordinates().getY() == y) {
+                        siblingOfOtherCornerNode = true;
+                    }
+                }
+
+                if (siblingOfCornerNode && siblingOfOtherCornerNode) {
+                    numOfCorrectlyPlacedNodesBetweenCornerNodes++;
+                }
+            }
+            i++;
         }
-        nodesBetweenCornerNodes.remove(node);  // Remove interior node
-        for (GraphNode cornerNode : cornerNodes) {
-            nodesBetweenCornerNodes.remove(cornerNode);  // Remove corner nodes
-        }
 
-        if (nodesBetweenCornerNodes.size() != 4) return false; // There are exactly 4 nodes between corner nodes
-
-        // Check if nodesBetweenCornerNodes are placed correctly
-        for (GraphNode middleNode : nodesBetweenCornerNodes) {
-            List<GraphNode> middleNodeSiblings = middleNode.getSiblings().collect(Collectors.toList());
-
-            System.out.println("Node between corner nodes have " + middleNodeSiblings.size() + " nodes");
-            // TODO: This is broken (???), sometimes it returns 3
-            // if (nodeBetweenSiblings.size() != 2) return false;  // nodeBetweenCornerNodes must have exactly 2 siblings
-
-            GraphNode node0 = middleNodeSiblings.get(0);
-            GraphNode node1 = middleNodeSiblings.get(1);
-
-            double x = (node0.getCoordinates().getX() + node1.getCoordinates().getX()) / 2;
-            double y = (node0.getCoordinates().getY() + node1.getCoordinates().getY()) / 2;
-
-            // This cannot be checked because of error above
-            // if (nodeBetweenCornerNodes.getCoordinates().getX() != x || nodeBetweenCornerNodes.getCoordinates().getX() != y)
-            //    return false;
-        }
+        if (numOfCorrectlyPlacedNodesBetweenCornerNodes != 4) return false;
 
         return true;
     }
