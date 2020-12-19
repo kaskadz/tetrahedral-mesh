@@ -47,17 +47,16 @@ public class Production6Tests extends AbstractProductionTest {
         assertDoesNotThrow(production);
     }
 
-
     @Test
     public void shouldNotApplyOnIncorrectLeftSide() {
         Production sut = new Production6();
 
-        TetrahedralGraph correctGraph = getGraph(false, true);
-        InteriorNode interiorNode = correctGraph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
+        TetrahedralGraph incorrectGraph = getGraph(false, true);
+        InteriorNode interiorNode = incorrectGraph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
 
         System.out.println(interiorNode);
 
-        Executable production = () -> sut.apply(correctGraph, interiorNode, Collections.emptyList());
+        Executable production = () -> sut.apply(incorrectGraph, interiorNode, Collections.emptyList());
 
         assertThrows(ProductionApplicationException.class, production);
     }
@@ -101,7 +100,6 @@ public class Production6Tests extends AbstractProductionTest {
 
         graph.connectNodes(bottomLeft, midLeft);
         graph.connectNodes(bottomLeft, midBottom);
-
 
         // Inserts 3 additional nodes, after this, production still should be applicable.
         if (additionalNodes) {
