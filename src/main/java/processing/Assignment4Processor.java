@@ -21,9 +21,6 @@ public class Assignment4Processor extends AbstractProcessor {
 
         // production 6
         getProductionById(6).apply(graph, entryNode, Collections.emptyList());
-        entryNode.getChildren()
-                .forEach(level2Interior -> getProductionById(6)
-                        .apply(graph, level2Interior, Collections.emptyList()));
 
         return graph;
     }
