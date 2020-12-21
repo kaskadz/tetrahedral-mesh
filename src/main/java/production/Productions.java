@@ -10,7 +10,8 @@ public class Productions {
             new Production2(),
             new Production3(),
             new Production5(),
-            new Production6()
+            new Production6(),
+            new Production7(),
     };
 
     public static final Map<Integer, Production> productionsMap = Arrays.stream(productions)
