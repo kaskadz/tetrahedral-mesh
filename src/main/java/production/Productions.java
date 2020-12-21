@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 public class Productions {
     public static final Production[] productions = {
             new Production1(),
-            new Production2()
+            new Production2(),
+            new Production9()
     };
 
     public static final Map<Integer, Production> productionsMap = Arrays.stream(productions)
