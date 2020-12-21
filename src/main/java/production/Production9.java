@@ -13,32 +13,26 @@ import java.util.stream.Stream;
 public class Production9 extends AbstractProduction {
     @Override
     public int getProductionId() {
-        return 7;
+        return 9;
     }
 
     @Override
     public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
         verifyInteriorNodeIsNull(interiorNode);
-        verifyGraphNodeListSize(graphNodeList, 1);
-        verifyGraphIsValid(graphNodeList.get(0), this::meetsProductionRequirements);
+        verifyGraphNodeListIsEmpty(graphNodeList);
+        verifyInteriorNodeIsValid(interiorNode, this::meetsProductionRequirements);
 
         applyProduction(graph, graphNodeList.get(0));
     }
 
-    private void verifyGraphIsValid(GraphNode graphNode, Predicate<GraphNode> interiorNodePredicate) {
-        if (!interiorNodePredicate.test(graphNode)) {
-            throwProductionApplicationException("Invalid interiorNode");
-        }
-    }
+    private boolean meetsProductionRequirements(InteriorNode node) {
 
-    private boolean meetsProductionRequirements(GraphNode node) {
-
-        if (node.getInteriors().count() != 2) {
+        if (node.getChildren().count() <= 2) {
             return false;
         }
 
-        Stream<GraphNode> graphPoints = node.getInteriors()
-                .filter(n -> n.getChildren().count() == 2)
+        Stream<GraphNode> graphPoints = node.getChildren()
+                .filter(n -> n.getChildren().count() >= 2)
                 .flatMap(interior -> {
                     verifyInteriorNodeSymbol(interior, "I");
                     List<GraphNode> graphNodes = getBottomNodesSorted(interior);
