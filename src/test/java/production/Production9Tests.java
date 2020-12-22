@@ -10,6 +10,7 @@ import model.TetrahedralGraph;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,39 +45,39 @@ public class Production9Tests extends AbstractProductionTest {
         TetrahedralGraph graph = new TetrahedralGraph();
 
         // Level 0
-        InteriorNode initialNode = graph.insertInteriorNode(0, "e");
-        InteriorNode leftI = graph.insertInteriorNode(0, "i");
-        graph.connectNodes(initialNode, leftI);
-        InteriorNode rightI = graph.insertInteriorNode(0, "i");
-        graph.connectNodes(initialNode, rightI);
+        GraphNode initialNode = graph.insertGraphNode(0, "e", new Point2d(0, 0));
+        InteriorNode leftI = graph.insertInteriorNode(1, "i");
+        graph.connectNodes(leftI, initialNode);
+        InteriorNode rightI = graph.insertInteriorNode(1, "i");
+        graph.connectNodes(rightI, initialNode);
 
         // Level 2 - I
-        InteriorNode i1 = graph.insertInteriorNode(1, "I");
-        InteriorNode i2 = graph.insertInteriorNode(1, "I");
+        InteriorNode i1 = graph.insertInteriorNode(2, "I");
+        InteriorNode i2 = graph.insertInteriorNode(2, "I");
         graph.connectNodes(leftI, i1);
         graph.connectNodes(leftI, i2);
 
-        InteriorNode i3 = graph.insertInteriorNode(1, "I");
-        InteriorNode i4 = graph.insertInteriorNode(1, "I");
+        InteriorNode i3 = graph.insertInteriorNode(2, "I");
+        InteriorNode i4 = graph.insertInteriorNode(2, "I");
         graph.connectNodes(rightI, i3);
         graph.connectNodes(rightI, i4);
 
         // Level 2 - E
-        GraphNode e1 = graph.insertGraphNode(1, "E", new Point2d(0, 0));
+        GraphNode e1 = graph.insertGraphNode(3, "E", new Point2d(0, 0));
         graph.connectNodes(i1, e1);
         graph.connectNodes(i3, e1);
 
-        GraphNode e2 = graph.insertGraphNode(1, "E", new Point2d(4, 4));
+        GraphNode e2 = graph.insertGraphNode(3, "E", new Point2d(4, 4));
         graph.connectNodes(i2, e2);
         graph.connectNodes(i4, e2);
 
-        GraphNode e3 = graph.insertGraphNode(1, "E", new Point2d(2, 2));
+        GraphNode e3 = graph.insertGraphNode(3, "E", new Point2d(2, 2));
         graph.connectNodes(i1, e3);
         graph.connectNodes(i2, e3);
         graph.connectNodes(e1, e3);
         graph.connectNodes(e2, e3);
 
-        GraphNode e4 = graph.insertGraphNode(1, "E", new Point2d(2, 2));
+        GraphNode e4 = graph.insertGraphNode(3, "E", new Point2d(2, 2));
         graph.connectNodes(i3, e4);
         graph.connectNodes(i4, e4);
         graph.connectNodes(e1, e4);
@@ -85,7 +86,9 @@ public class Production9Tests extends AbstractProductionTest {
         Production prod = new Production9();
 
         // Act
-        Executable subject = () -> prod.apply(graph, initialNode, Collections.emptyList());
+        ArrayList<GraphNode> nodes = new ArrayList<>();
+        nodes.add(initialNode);
+        Executable subject = () -> prod.apply(graph, null, nodes);
 
         // Assert
         assertDoesNotThrow(subject);
