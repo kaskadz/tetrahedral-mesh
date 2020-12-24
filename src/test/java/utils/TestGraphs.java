@@ -145,6 +145,37 @@ public class TestGraphs {
         return prepareGraph(nodesMap, links);
     }
 
+    public static TetrahedralGraph getProduction6LeftSideWithIncorrectCoordinates() {
+        Map<Integer, Pair<Float>> nodesMap = new HashMap<>();
+
+        // nodesMap.put(0, new Pair<>(0.0f, 0.0f)); // center
+        nodesMap.put(1, new Pair<>(-1.0f, -1.0f)); // bottomLeft
+        nodesMap.put(2, new Pair<>(-1.0f, 0.0f)); // midLeft
+        nodesMap.put(3, new Pair<>(-1.0f, 1.0f)); // topLeft
+        nodesMap.put(4, new Pair<>(0.0f, 1.0f)); // midTop
+        nodesMap.put(5, new Pair<>(10.0f, 10.0f)); // topRight, wrong coords
+        nodesMap.put(6, new Pair<>(1.0f, 0.0f)); // midRight
+        nodesMap.put(7, new Pair<>(1.0f, -1.0f)); // bottomRight
+        nodesMap.put(8, new Pair<>(0.0f, -1.0f)); // midBottom
+
+        List<Pair<Integer>> links = new ArrayList<>();
+
+        links.add(new Pair<>(0, 3));
+        links.add(new Pair<>(0, 5));
+        links.add(new Pair<>(0, 1));
+        links.add(new Pair<>(0, 7));
+        links.add(new Pair<>(3, 2));
+        links.add(new Pair<>(3, 4));
+        links.add(new Pair<>(5, 6));
+        links.add(new Pair<>(5, 4));
+        links.add(new Pair<>(7, 6));
+        links.add(new Pair<>(7, 8));
+        links.add(new Pair<>(1, 2));
+        links.add(new Pair<>(1, 8));
+
+        return prepareGraph(nodesMap, links);
+    }
+
     private static TetrahedralGraph prepareGraph(Map<Integer, Pair<Float>> nodesCoords, List<Pair<Integer>> links) {
         int graphLevel = 0;
 

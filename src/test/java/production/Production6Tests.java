@@ -35,6 +35,19 @@ public class Production6Tests extends AbstractProductionTest {
     }
 
     @Test
+    public void shouldChangeSymbolOfInteriorNode() {
+        // given
+        TetrahedralGraph correctGraph = TestGraphs.getProduction6CorrectLeftSide();
+        InteriorNode interiorNode = correctGraph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
+
+        // when
+        production6.apply(correctGraph, interiorNode, Collections.emptyList());
+
+        // then
+        assertEquals(interiorNode.getSymbol(), "i");
+    }
+
+    @Test
     public void shouldApplyOnCorrectLeftSideWithAdditionalNodesOnRight() {
         // given
         TetrahedralGraph correctGraph = TestGraphs.getProduction6CorrectLeftSideWithAdditionalNodesOnRight();
@@ -64,6 +77,19 @@ public class Production6Tests extends AbstractProductionTest {
     public void shouldNotApplyOnLeftSideWithMissingNode() {
         // given
         TetrahedralGraph incorrectGraph = TestGraphs.getProduction6LeftSideWithMissingNode();
+        InteriorNode interiorNode = incorrectGraph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
+
+        // when
+        Executable exception = () -> production6.apply(incorrectGraph, interiorNode, Collections.emptyList());
+
+        // then
+        assertThrows(ProductionApplicationException.class, exception);
+    }
+
+    @Test
+    public void shouldNotApplyOnLeftSideWithWrongCoordinates() {
+        // given
+        TetrahedralGraph incorrectGraph = TestGraphs.getProduction6LeftSideWithIncorrectCoordinates();
         InteriorNode interiorNode = incorrectGraph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
 
         // when
