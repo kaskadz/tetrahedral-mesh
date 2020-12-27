@@ -5,7 +5,6 @@ import model.InteriorNode;
 import model.Point2d;
 import model.TetrahedralGraph;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,20 +29,19 @@ public class Production2 extends AbstractProduction {
         List<GraphNode> gns = node.getSiblings().collect(Collectors.toList());
         if (gns.size() != 4)
             return false;
+
         for (GraphNode oneNode : gns) {
-            Set<GraphNode> oneSet = new HashSet<>();
-            oneSet.addAll(oneNode
+            Set<GraphNode> oneSet = oneNode
                     .getSiblings()
                     .filter(gns::contains)
-                    .collect(Collectors.toList()));
-            Set<GraphNode> otherSet = new HashSet<>();
-            for (GraphNode otherNode : gns) {
-                otherSet.addAll(otherNode
-                        .getSiblings()
-                        .filter(gns::contains)
-                        .collect(Collectors.toList()));
-            }
+                    .collect(Collectors.toSet());
+
+            Set<GraphNode> otherSet = gns.stream()
+                    .flatMap(x -> x.getSiblings().filter(gns::contains))
+                    .collect(Collectors.toSet());
+
             oneSet.retainAll(otherSet);
+
             if (oneSet.size() != 2)
                 return false;
         }
@@ -56,7 +54,7 @@ public class Production2 extends AbstractProduction {
                                             oneNode.getCoordinates().getY())
                             ))
                     .reduce(Boolean::logicalAnd);
-            if (!(properSiblings.isPresent() && (properSiblings.get())))
+            if (!(properSiblings.isPresent() && properSiblings.get()))
                 return false;
         }
         return true;
