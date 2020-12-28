@@ -42,11 +42,17 @@ public class TetrahedralGraph {
     }
 
     public int getMaxLevel() {
-        return Math.max(Collections.max(graphNodesByLevel.keySet()), Collections.max(interiorNodesByLevel.keySet()));
+        Integer maxGraphNodeLevel = graphNodesByLevel.isEmpty() ? 0 : Collections.max(graphNodesByLevel.keySet());
+        Integer maxInteriorNodeLevel = interiorNodesByLevel.isEmpty() ? 0 : Collections.max(interiorNodesByLevel.keySet());
+
+        return Math.max(maxGraphNodeLevel, maxInteriorNodeLevel);
     }
 
     public int getMinLevel() {
-        return Math.min(Collections.min(graphNodesByLevel.keySet()), Collections.min(interiorNodesByLevel.keySet()));
+        Integer minGraphNodeLevel = graphNodesByLevel.isEmpty() ? 0 : Collections.min(graphNodesByLevel.keySet());
+        Integer minInteriorNodeLevel = interiorNodesByLevel.isEmpty() ? 0 : Collections.min(interiorNodesByLevel.keySet());
+
+        return Math.min(minGraphNodeLevel, minInteriorNodeLevel);
     }
 
     public Optional<NodeType> getNodeType(String id) {
