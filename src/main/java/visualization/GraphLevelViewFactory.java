@@ -9,43 +9,17 @@ import org.graphstream.graph.Element;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.swing_viewer.SwingViewer;
-import org.graphstream.ui.view.View;
-import org.graphstream.ui.view.Viewer;
 
-import javax.swing.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MultiLayerVisualizer implements Visualizer {
+public class GraphLevelViewFactory {
     private final String styles = ResourceLoader.readStyleSheet();
 
-    @Override
-    public void displayGraph(TetrahedralGraph graph) {
-        JFrame mainFrame = new JFrame("Tetrahedral mesh");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JTabbedPane tabbedPane = new JTabbedPane();
-
-        for (int i = 0; i <= graph.getMaxLevel(); i++) {
-            JFrame frame = new JFrame();
-
-            Graph viewGraph = generateGraphView(graph, i);
-
-            Viewer viewer = new SwingViewer(viewGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-            View defaultView = viewer.addDefaultView(false);
-            frame.add((JPanel) defaultView);
-            tabbedPane.addTab(String.format("Level %d", i), frame.getContentPane());
-        }
-
-        mainFrame.getContentPane().add(tabbedPane);
-        mainFrame.setSize(800, 800);
-        mainFrame.setVisible(true);
-    }
-
-    private Graph generateGraphView(TetrahedralGraph graph, int level) {
+    public Graph createGraphView(TetrahedralGraph graph, int level) {
         Collection<GraphNode> graphNodes = graph.getGraphNodesByLevel(level);
         Collection<InteriorNode> interiorNodes = graph.getInteriorNodesByLevel(level);
         Graph viewGraph = new SingleGraph(String.format("Level %d", level));
