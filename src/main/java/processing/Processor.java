@@ -5,6 +5,7 @@ import visualization.MultiStepVisualizer;
 
 public interface Processor {
     String getProcessorId();
+    void setMultiStepVisualizer(MultiStepVisualizer multiStepVisualizer);
 
-    TetrahedralGraph processGraph(TetrahedralGraph graph, MultiStepVisualizer visualizer);
+    TetrahedralGraph processGraph(TetrahedralGraph graph);
 }

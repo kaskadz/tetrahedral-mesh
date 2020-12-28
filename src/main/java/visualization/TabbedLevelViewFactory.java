@@ -21,6 +21,8 @@ public class TabbedLevelViewFactory {
 
             Viewer viewer = new SwingViewer(viewGraph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
             View defaultView = viewer.addDefaultView(false);
+            defaultView.getCamera().setViewCenter(0, 0, 0);
+            defaultView.getCamera().setGraphViewport(-1, -1, 1, 1);
             frame.add((JPanel) defaultView);
             tabbedPane.addTab(String.format("Level %d", i), frame.getContentPane());
         }

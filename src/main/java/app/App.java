@@ -27,11 +27,12 @@ public class App {
         Processor processor = Processors.processorsMap.get(parameters.processorId);
 
         if (processor != null) {
-            TetrahedralGraph initialGraph = initializer.initializeGraph();
-            MultiStepVisualizer multiStepVisualizer = new MultiStepMultiLevelVisualizer();
             Visualizer visualizer = new MultiLevelVisualizer();
+            MultiStepVisualizer multiStepVisualizer = new MultiStepMultiLevelVisualizer();
+            processor.setMultiStepVisualizer(multiStepVisualizer);
 
-            TetrahedralGraph graph = processor.processGraph(initialGraph, multiStepVisualizer);
+            TetrahedralGraph initialGraph = initializer.initializeGraph();
+            TetrahedralGraph graph = processor.processGraph(initialGraph);
 
             multiStepVisualizer.displayAll();
             visualizer.displayGraph(graph);

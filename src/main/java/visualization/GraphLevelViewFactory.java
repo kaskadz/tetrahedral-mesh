@@ -52,6 +52,9 @@ public class GraphLevelViewFactory {
                 .filter(CustomPredicates.distinctByKey(Element::getId))
                 .forEach(x -> addRegularEdge(viewGraph, x.getId(), x.getNode0().getId(), x.getNode1().getId()));
 
+        viewGraph.setAttribute("ui.quality");
+        viewGraph.setAttribute("ui.antialias");
+
         return viewGraph;
     }
 
