@@ -7,11 +7,12 @@ import model.GraphNode;
 import model.InteriorNode;
 import model.Point2d;
 import model.TetrahedralGraph;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,10 +85,9 @@ public class Production9Tests extends AbstractProductionTest {
         graph.connectNodes(e2, e4);
 
         Production prod = new Production9();
+        List<GraphNode> nodes = Lists.newArrayList(initialNode, e1, e2, e3, e4);
 
         // Act
-        ArrayList<GraphNode> nodes = new ArrayList<>();
-        nodes.add(initialNode);
         Executable subject = () -> prod.apply(graph, null, nodes);
 
         // Assert
