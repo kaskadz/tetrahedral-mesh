@@ -1,15 +1,21 @@
 package processing;
 
-import common.CustomCollectors;
 import model.GraphNode;
-import model.InteriorNode;
 import model.TetrahedralGraph;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Assignment7Processor extends AbstractProcessor {
-    private final static String PROCESSOR_ID = "zad7";
+    private final static String PROCESSOR_ID = "zad5";
+
+    public static Comparator<GraphNode> byX = Comparator.comparing(
+            x -> x.getCoordinates().getX()
+    );
+
+    public static Comparator<GraphNode> byY = Comparator.comparing(
+            x -> x.getCoordinates().getY()
+    );
 
     @Override
     public String getProcessorId() {
@@ -21,19 +27,30 @@ public class Assignment7Processor extends AbstractProcessor {
 
         graph = new Assignment1Processor().processGraph(graph);
 
-        List<InteriorNode> interiors = new ArrayList<>(graph
-                .getInteriorNodesByLevel(graph.getMaxLevel() - 1));
-
-        GraphNode entryNode = interiors
+        List<GraphNode> sortedNodes = graph.getGraphNodesByLevel(graph.getMaxLevel())
                 .stream()
-                .flatMap(InteriorNode::getSiblings)
-                .distinct()
-                .filter(i -> i.getInteriors().collect(Collectors.toList()).containsAll(interiors))
-                .collect(CustomCollectors.toSingle());
+                .filter(x -> (x.getCoordinates().getX() == 0.0 || x.getCoordinates().getY() == 0.0)
+                        && (Math.abs(x.getCoordinates().getX()) == 0.5 || Math.abs(x.getCoordinates().getY()) == 0.5))
+                .sorted(byX.thenComparing(byY))
+                .collect(Collectors.toList());
 
-        getProductionById(7).apply(graph, null, Collections.singletonList(entryNode));
-        getProductionById(7).apply(graph, null, Collections.singletonList(entryNode));
 
+        for(int i=0; i<sortedNodes.size()-2; i+=2) {
+            List<GraphNode> nodes = sortedNodes
+                    .get(i)
+                    .getSiblings()
+                    .filter(x -> x.getCoordinates().getX() == 0.0 || x.getCoordinates().getY() == 0.0)
+                    .collect(Collectors.toList());
+
+            nodes.add(sortedNodes.get(i));
+            nodes.sort(byX.thenComparing(byY));
+
+
+            getProductionById(7).apply(graph, null, nodes);
+
+//            break;
+
+        }
         return graph;
     }
 }

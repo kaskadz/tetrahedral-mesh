@@ -11,24 +11,6 @@ import java.util.stream.Stream;
 
 public class Production7 extends AbstractProduction {
 
-    public class Tuple<X, Y> {
-        public final X e1;
-        public final Y e2;
-        public Tuple(X x, Y y) {
-            this.e1 = x;
-            this.e2 = y;
-        }
-    }
-
-    private Comparator<GraphNode> byX = Comparator.comparing(
-            x -> x.getCoordinates().getX()
-    );
-
-    private Comparator<GraphNode> byY = Comparator.comparing(
-            x -> x.getCoordinates().getY()
-    );
-
-
     private List<GraphNode> commonCh1, commonCh2;
 
     @Override
@@ -40,134 +22,94 @@ public class Production7 extends AbstractProduction {
     public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
 
         verifyInteriorNodeIsNull(interiorNode);
-        verifyGraphNodeListSize(graphNodeList, 1);
+        verifyGraphNodeListSize(graphNodeList, 3);
 
-        GraphNode entryNode = graphNodeList.get(0);
-
-        if (this.meetsProductionRequirements(entryNode)) {
+        if (this.meetsProductionRequirements(graph, graphNodeList)) {
             applyProduction(graph);
         } else {
             throwProductionApplicationException("Uuu, nie dziala");
         }
     }
 
-    private List<Tuple<InteriorNode, InteriorNode>> getNeighborInteriors(List<InteriorNode> interiorNodes) {
-        List<Tuple<InteriorNode, InteriorNode>> neighbouredInterior = new ArrayList<>();
+    private boolean isContaining(List<GraphNode> nodes, GraphNode node) {
+        return nodes
+                .stream()
+                .anyMatch(x -> x.getCoordinates().equals(node.getCoordinates()) && !x.getId().equals(node.getId()));
+    }
 
-        for (int i=0; i < interiorNodes.size(); i++) {
-            InteriorNode i1 = interiorNodes.get(i);
+    private List<GraphNode> filterMirroredNodes(List<GraphNode> res, List<GraphNode> nodes) {
 
-            for (int j=i+1; j < interiorNodes.size(); j++) {
-                InteriorNode i2 = interiorNodes.get(j);
+        List<GraphNode> r = new ArrayList<>();
 
-                List<GraphNode> commonNodes = i1.getSiblings()
-                        .filter(x -> i2.getSiblings().collect(Collectors.toList()).contains(x))
-                        .collect(Collectors.toList());
+        r.add(res.stream().filter(x -> x.getCoordinates().equals(nodes.get(0).getCoordinates()) && !x.getId().equals(nodes.get(0).getId())).findFirst().get());
+        r.add(res.stream().filter(x -> x.getCoordinates().equals(nodes.get(1).getCoordinates()) && !x.getId().equals(nodes.get(1).getId())).findFirst().get());
+        r.add(res.stream().filter(x -> x.getCoordinates().equals(nodes.get(2).getCoordinates()) && !x.getId().equals(nodes.get(2).getId())).findFirst().get());
 
-                if (commonNodes.size() == 2) {
-                    neighbouredInterior.add(new Tuple<>(i1, i2));
-//                    neighbouredInterior.add(i1);
-//                    neighbouredInterior.add(i2);
-////                    return Arrays.asList(i1, i2);
-                }
-            }
+        return r;
+    }
+
+    private boolean meetsProductionRequirements(TetrahedralGraph graph, List<GraphNode> nodes) {
+        int level = nodes.get(0).getLevel();
+        nodes = nodes
+                .stream()
+                .filter(x -> x.getLevel() == level)
+                .collect(Collectors.toList());
+
+
+        if (nodes.size() != 3) { return false; }
+
+        List<InteriorNode> leftInteriors = nodes
+                .stream()
+                .flatMap(GraphNode::getInteriors)
+                .distinct()
+                .collect(Collectors.toList());
+
+
+        if (leftInteriors.size() < 2) {
+            return false;
         }
-        return neighbouredInterior;
-    }
-
-    private boolean existsWithCoords(GraphNode n, Set<GraphNode> nodes) {
-        return nodes.stream().anyMatch(x -> x.getId() != n.getId()
-                && x.getCoordinates().getX() == n.getCoordinates().getX()
-                && x.getCoordinates().getY() == n.getCoordinates().getY());
-    }
-
-    private boolean meetsProductionRequirements(GraphNode node) {
-        // check if there is at least one level down
-        if (node.getGraph().getMaxLevel() < node.getLevel() + 1) return false;
-
-        List<InteriorNode> interiorNodes = node.getInteriors().collect(Collectors.toList());
-
-        if (interiorNodes.size() < 2) return false;
-
-        // check if there is at least one pair of neighbouring interior nodes
-        // this pair should have minimum 2 common neighbour
-
-        // neighbouring interior nodes
-        List<Tuple<InteriorNode, InteriorNode>> interiors = getNeighborInteriors(interiorNodes);
 
 
-        // not found any pair of neighbouring interior nodes
-        if (interiors.size() == 0) return false;
+        InteriorNode leftParent = leftInteriors.get(0).getParent().get();
 
-        for (Tuple<InteriorNode, InteriorNode> neighInt : interiors) {
+        for(GraphNode s : leftParent.getSiblings().collect(Collectors.toList())) {
 
-            List<Tuple<InteriorNode, InteriorNode>> n1Children = getNeighborInteriors(neighInt.e1.getChildren().collect(Collectors.toList()));
-            if (n1Children.size() == 0) continue;
+            for(InteriorNode i : s.getInteriors().collect(Collectors.toList())) {
 
-            List<Tuple<InteriorNode, InteriorNode>> n2Children = getNeighborInteriors(neighInt.e2.getChildren().collect(Collectors.toList()));
-            if (n2Children.size() == 0) continue;
+                if (i.equals(leftParent)) {
+                    continue;
+                }
 
+                List<InteriorNode> sbs = i.getChildren().collect(Collectors.toList());
 
-            for (Tuple<InteriorNode, InteriorNode> ch1 : n1Children) {
-                for (Tuple<InteriorNode, InteriorNode> ch2 : n2Children) {
+                for(int k=0; k<sbs.size(); k++){
+                    for(int l=k+1; l<sbs.size(); l++) {
 
-                    Set<GraphNode> ch1Nodes = Stream.concat(ch1.e1.getSiblings(), ch1.e2.getSiblings())
-                            .collect(Collectors.toSet());
+                        boolean upperRight = (isContaining(sbs.get(k).getSiblings().collect(Collectors.toList()), nodes.get(0)) && isContaining(sbs.get(k).getSiblings().collect(Collectors.toList()), nodes.get(1)))
+                                || (isContaining(sbs.get(l).getSiblings().collect(Collectors.toList()), nodes.get(0)) && isContaining(sbs.get(l).getSiblings().collect(Collectors.toList()), nodes.get(1)));
 
-                    Set<GraphNode> ch2Nodes = Stream.concat(ch2.e1.getSiblings(), ch2.e2.getSiblings())
-                            .collect(Collectors.toSet());
+                        boolean bottomRight = (isContaining(sbs.get(k).getSiblings().collect(Collectors.toList()), nodes.get(1)) && isContaining(sbs.get(k).getSiblings().collect(Collectors.toList()), nodes.get(2)))
+                                || (isContaining(sbs.get(l).getSiblings().collect(Collectors.toList()), nodes.get(1)) && isContaining(sbs.get(l).getSiblings().collect(Collectors.toList()), nodes.get(2))) ;
 
+                        if (upperRight && bottomRight) {
+                            List<GraphNode> sss2 = Stream.concat(sbs.get(k).getSiblings(),sbs.get(l).getSiblings()).collect(Collectors.toList());
 
-                    List<GraphNode> commonInCh1 = ch1Nodes.stream()
-                            .filter(x -> existsWithCoords(x, ch2Nodes))
-                            .sorted(byX.thenComparing(byY))
-                            .collect(Collectors.toList());
-
-                    List<GraphNode> commonInCh2 = ch2Nodes.stream()
-                            .filter(x -> existsWithCoords(x, ch1Nodes))
-                            .sorted(byX.thenComparing(byY))
-                            .collect(Collectors.toList());
-
-                    // found 3 graphNodes with same coordinates in each list
-                    if (commonInCh1.size() == 3) {
-                        double midX = (commonInCh1.get(0).getCoordinates().getX() + commonInCh1.get(2).getCoordinates().getX()) / 2;
-                        double midY = (commonInCh1.get(0).getCoordinates().getY() + commonInCh1.get(2).getCoordinates().getY()) / 2;
-
-                        // check if mid coords are correct
-                        if (midX == commonInCh1.get(1).getCoordinates().getX() && midY == commonInCh2.get(1).getCoordinates().getY()) {
-                            commonCh1 = commonInCh1;
-                            commonCh2 = commonInCh2;
+                            this.commonCh1 = nodes;
+                            this.commonCh2 = filterMirroredNodes(sss2, nodes);
                             return true;
                         }
                     }
                 }
             }
         }
-        return false;
+            return false;
     }
 
     private void applyProduction(TetrahedralGraph graph) {
 
-
-        System.out.println("commonCh1 nodes");
-
-        commonCh1.forEach(x -> System.out.printf("id = %s x = %f y = %f\n",
-                x.getId(),
-                x.getCoordinates().getX(),
-                x.getCoordinates().getY()));
-
-        System.out.println("commonCh2 nodes");
-
-        commonCh2.forEach(x -> System.out.printf("id = %s x = %f y = %f\n",
-                x.getId(),
-                x.getCoordinates().getX(),
-                x.getCoordinates().getY()));
-
-
         for(int i=0; i<3; i++) {
             graph.mergeNodes(commonCh2.get(i), commonCh1.get(i));
         }
-        System.out.println("Applied production 7");
 
     }
 }
