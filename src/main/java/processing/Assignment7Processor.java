@@ -1,48 +1,45 @@
-package production;
+package processing;
 
-import common.CustomCollectors;
-import common.ProductionApplicationException;
-import initialization.EntrySymbolInitializer;
 import model.GraphNode;
 import model.InteriorNode;
 import model.Point2d;
 import model.TetrahedralGraph;
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+/**
+ * Temporary, basic visualisation of production 9
+ */
+public class Assignment7Processor extends AbstractProcessor {
 
-public class Production9Tests extends AbstractProductionTest {
-    @Test
-    public void shouldHaveProperNumber() {
-        // Arrange
-        Production prod = new Production9();
-
-        // Act & Assert
-        assertEquals(9, prod.getProductionId());
+    @Override
+    public String getProcessorId() {
+        return "zad7";
     }
 
-    @Test
-    public void shouldNotApplyOnInitialGraph() {
-        // Arrange
-        Production prod = new Production9();
-        TetrahedralGraph graph = new EntrySymbolInitializer().initializeGraph();
-        InteriorNode initialNode = graph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
+    @Override
+    public TetrahedralGraph processGraph(TetrahedralGraph graph) {
+        graph = buildBasicExampleGraph();
 
-        // Act
-        Executable subject = () -> prod.apply(graph, initialNode, Collections.emptyList());
+        List<GraphNode> nodes = graph
+                .getGraphNodes()
+                .stream()
+                .filter(x -> x.getSymbol().equals("e"))
+                .collect(Collectors.toList());
 
-        // Assert
-        assertThrows(ProductionApplicationException.class, subject);
+        List<GraphNode> bottomNodes = graph
+                .getGraphNodes()
+                .stream()
+                .filter(x -> x.getSymbol().equals("E"))
+                .collect(Collectors.toList());
+
+        nodes.addAll(bottomNodes);
+        getProductionById(9).apply(graph, null, nodes);
+        return graph;
     }
 
-    @Test
-    public void shouldApplyOnGraphIsomorphicToLeftSide() {
-        // Arrange
+    private TetrahedralGraph buildBasicExampleGraph() {
         TetrahedralGraph graph = new TetrahedralGraph();
 
         // Level 0
@@ -84,13 +81,6 @@ public class Production9Tests extends AbstractProductionTest {
         graph.connectNodes(e1, e4);
         graph.connectNodes(e2, e4);
 
-        Production prod = new Production9();
-        List<GraphNode> nodes = Lists.newArrayList(initialNode, e1, e2, e3, e4);
-
-        // Act
-        Executable subject = () -> prod.apply(graph, null, nodes);
-
-        // Assert
-        assertDoesNotThrow(subject);
+        return graph;
     }
 }

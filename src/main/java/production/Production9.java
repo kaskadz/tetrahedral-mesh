@@ -2,7 +2,6 @@ package production;
 
 import model.GraphNode;
 import model.InteriorNode;
-import model.NodeBase;
 import model.TetrahedralGraph;
 
 import java.util.ArrayList;
