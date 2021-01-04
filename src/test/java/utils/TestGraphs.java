@@ -137,6 +137,7 @@ public class TestGraphs {
         links.add(new Pair<>(0, 7));
         links.add(new Pair<>(3, 2));
         links.add(new Pair<>(3, 4));
+        links.add(new Pair<>(5, 4));
         links.add(new Pair<>(5, 7));
         links.add(new Pair<>(7, 8));
         links.add(new Pair<>(1, 2));
