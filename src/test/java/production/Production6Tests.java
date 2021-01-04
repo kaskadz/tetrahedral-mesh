@@ -128,4 +128,20 @@ public class Production6Tests extends AbstractProductionTest {
         assertThrows(ProductionApplicationException.class, exception);
         fileSinkImages.writeAll(incorrectGraph.getGraph(), outputDirectory + currentDirectory + outputFile);
     }
+
+    @Test
+    public void shouldApplyOnCorrectLeftSideInGreaterGraph() throws IOException {
+        // given
+        String currentDirectory = "correctLeftSideInGreaterGraph/";
+        TetrahedralGraph correctGraph = TestGraphs.getProduction6CorrectLeftSideInGreaterGraph();
+        InteriorNode interiorNode = correctGraph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
+        fileSinkImages.writeAll(correctGraph.getGraph(), outputDirectory + currentDirectory + inputFile);
+
+        // when
+        Executable production = () -> production6.apply(correctGraph, interiorNode, Collections.emptyList());
+
+        // then
+        assertDoesNotThrow(production);
+        fileSinkImages.writeAll(correctGraph.getGraph(), outputDirectory + currentDirectory + outputFile);
+    }
 }
