@@ -5,7 +5,9 @@ import model.TetrahedralGraph;
 import org.apache.log4j.BasicConfigurator;
 import processing.Processor;
 import processing.Processors;
-import visualization.MultiLayerVisualizer;
+import visualization.MultiLevelVisualizer;
+import visualization.MultiStepMultiLevelVisualizer;
+import visualization.MultiStepVisualizer;
 import visualization.Visualizer;
 
 import java.util.Arrays;
@@ -25,11 +27,14 @@ public class App {
         Processor processor = Processors.processorsMap.get(parameters.processorId);
 
         if (processor != null) {
-            TetrahedralGraph initialGraph = initializer.initializeGraph();
+            Visualizer visualizer = new MultiLevelVisualizer();
+            MultiStepVisualizer multiStepVisualizer = new MultiStepMultiLevelVisualizer();
+            processor.setMultiStepVisualizer(multiStepVisualizer);
 
+            TetrahedralGraph initialGraph = initializer.initializeGraph();
             TetrahedralGraph graph = processor.processGraph(initialGraph);
 
-            Visualizer visualizer = new MultiLayerVisualizer();
+            multiStepVisualizer.displayAll();
             visualizer.displayGraph(graph);
         } else {
             System.out.println("Available processors:");
