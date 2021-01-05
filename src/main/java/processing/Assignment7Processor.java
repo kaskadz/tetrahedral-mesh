@@ -19,7 +19,7 @@ public class Assignment7Processor extends AbstractProcessor {
     }
 
     @Override
-    public TetrahedralGraph processGraph(TetrahedralGraph graph) {
+    public TetrahedralGraph processGraphInternal(TetrahedralGraph graph) {
         graph = buildBasicExampleGraph();
 
         List<GraphNode> nodes = graph
@@ -35,7 +35,7 @@ public class Assignment7Processor extends AbstractProcessor {
                 .collect(Collectors.toList());
 
         nodes.addAll(bottomNodes);
-        getProductionById(9).apply(graph, null, nodes);
+        applyProduction(9, graph, null, nodes);
         return graph;
     }
 
@@ -61,21 +61,21 @@ public class Assignment7Processor extends AbstractProcessor {
         graph.connectNodes(rightI, i4);
 
         // Level 2 - E
-        GraphNode e1 = graph.insertGraphNode(2, "E", new Point2d(0, 0));
+        GraphNode e1 = graph.insertGraphNode(2, "E", new Point2d(-1, -1));
         graph.connectNodes(i1, e1);
         graph.connectNodes(i3, e1);
 
-        GraphNode e2 = graph.insertGraphNode(2, "E", new Point2d(4, 4));
+        GraphNode e2 = graph.insertGraphNode(2, "E", new Point2d(1, 1));
         graph.connectNodes(i2, e2);
         graph.connectNodes(i4, e2);
 
-        GraphNode e3 = graph.insertGraphNode(2, "E", new Point2d(2, 2));
+        GraphNode e3 = graph.insertGraphNode(2, "E", new Point2d(0, 0));
         graph.connectNodes(i1, e3);
         graph.connectNodes(i2, e3);
         graph.connectNodes(e1, e3);
         graph.connectNodes(e2, e3);
 
-        GraphNode e4 = graph.insertGraphNode(2, "E", new Point2d(2, 2));
+        GraphNode e4 = graph.insertGraphNode(2, "E", new Point2d(0, 0));
         graph.connectNodes(i3, e4);
         graph.connectNodes(i4, e4);
         graph.connectNodes(e1, e4);
