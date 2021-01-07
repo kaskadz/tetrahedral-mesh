@@ -36,6 +36,7 @@ public class App {
 
             multiStepVisualizer.displayAll();
             visualizer.displayGraph(graph);
+            System.exit(0);
         } else {
             System.out.println("Available processors:");
             Arrays.stream(Processors.processors).forEach(x -> System.out.printf(" - %s\n", x.getProcessorId()));
