@@ -19,10 +19,7 @@ public class App {
     public static void main(String[] args) {
         System.setProperty("org.graphstream.ui", "swing");
         BasicConfigurator.configure();
-        // TODO:
-        // revert to version with reading from args
-        // Parameters parameters = Parameters.readArgs(args);
-        Parameters parameters = Parameters.readArgs(new String[]{"zad4"});
+        Parameters parameters = Parameters.readArgs(args);
 
         System.out.println(parameters);
 
