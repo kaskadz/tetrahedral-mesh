@@ -17,11 +17,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import visualization.MultiLevelVisualizer;
 import visualization.MultiStepMultiLevelVisualizer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,11 +57,65 @@ public class Production2Tests extends AbstractProductionTest {
     private void assertChildGraphIsCreatedProperly(InteriorNode interiorNode) {
         assertThat(interiorNode.getChildrenIds()).hasSize(4);
 
-        Set<String> graphNodeChildren = interiorNode
+        Set<GraphNode> graphNodeChildren = interiorNode
                 .getChildren()
-                .flatMap(InteriorNode::getSiblingsIds)
+                .flatMap(InteriorNode::getSiblings)
                 .collect(Collectors.toSet());
         assertThat(graphNodeChildren).hasSize(9);
+
+        List<GraphNode> graphNodeList = IntStream.range(0, 9)
+                .mapToObj(i -> getNthNode(graphNodeChildren, i).get())
+                .collect(Collectors.toList());
+
+        // 6 7 8
+        // 3 4 5
+        // 0 1 2
+        assertNodesAreConnected(graphNodeList, 0, 1);
+        assertNodesAreConnected(graphNodeList, 1, 2);
+        assertNodesAreConnected(graphNodeList, 3, 4);
+        assertNodesAreConnected(graphNodeList, 4, 5);
+        assertNodesAreConnected(graphNodeList, 6, 7);
+        assertNodesAreConnected(graphNodeList, 7, 8);
+        assertNodesAreConnected(graphNodeList, 0, 3);
+        assertNodesAreConnected(graphNodeList, 3, 6);
+        assertNodesAreConnected(graphNodeList, 1, 4);
+        assertNodesAreConnected(graphNodeList, 4, 7);
+        assertNodesAreConnected(graphNodeList, 2, 5);
+        assertNodesAreConnected(graphNodeList, 5, 8);
+
+        // 2 3
+        // 0 1
+        List<Point2d> points = interiorNode.getSiblings()
+                .map(GraphNode::getCoordinates)
+                .sorted(Comparator
+                        .comparingDouble(Point2d::getY)
+                        .thenComparingDouble(Point2d::getX))
+                .collect(Collectors.toList());
+
+        assertThat(getNthNode(graphNodeList, 0).get().getCoordinates()).isEqualTo(points.get(0));
+        assertThat(getNthNode(graphNodeList, 2).get().getCoordinates()).isEqualTo(points.get(1));
+        assertThat(getNthNode(graphNodeList, 6).get().getCoordinates()).isEqualTo(points.get(2));
+        assertThat(getNthNode(graphNodeList, 8).get().getCoordinates()).isEqualTo(points.get(3));
+        assertThat(getNthNode(graphNodeList, 1).get().getCoordinates()).isEqualTo(Point2d.center(points.get(0), points.get(1)).get());
+        assertThat(getNthNode(graphNodeList, 5).get().getCoordinates()).isEqualTo(Point2d.center(points.get(1), points.get(3)).get());
+        assertThat(getNthNode(graphNodeList, 7).get().getCoordinates()).isEqualTo(Point2d.center(points.get(2), points.get(3)).get());
+        assertThat(getNthNode(graphNodeList, 3).get().getCoordinates()).isEqualTo(Point2d.center(points.get(0), points.get(2)).get());
+        assertThat(getNthNode(graphNodeList, 4).get().getCoordinates()).isEqualTo(Point2d.center(points).get());
+    }
+
+    private static void assertNodesAreConnected(List<GraphNode> graphNodeList, int from, int to) {
+        assertThat(graphNodeList.get(from).getSiblingsIds()
+                .anyMatch(x -> x.equals(graphNodeList.get(to).getId())))
+                .isTrue();
+    }
+
+    private static Optional<GraphNode> getNthNode(Collection<GraphNode> graphNodes, int n) {
+        return graphNodes.stream()
+                .sorted(Comparator
+                        .comparingDouble((GraphNode o) -> o.getCoordinates().getY())
+                        .thenComparingDouble(o -> o.getCoordinates().getX()))
+                .skip(n)
+                .findFirst();
     }
 
     @ParameterizedTest(name = "{0}")
@@ -132,7 +184,7 @@ public class Production2Tests extends AbstractProductionTest {
         interiorNode1 = graph.getInteriorNodes().stream().collect(CustomCollectors.toSingle());
         new Production1().apply(graph, interiorNode1, Collections.emptyList());
         interiorNode = interiorNode1.getChildren().collect(CustomCollectors.toSingle());
-        graphNode = interiorNode.getSiblings().findFirst().get();
+        graphNode = getNthNode(interiorNode.getSiblings().collect(Collectors.toList()), 0).get();
         Set<GraphNode> siblings = graphNode.getSiblings().collect(Collectors.toSet());
         Point2d coordinates = graphNode.getCoordinates();
         coordinates = new Point2d(coordinates.getX() * 2.0, coordinates.getY() * 2);
