@@ -33,6 +33,10 @@ public class Point2d {
         return Objects.hash(x, y);
     }
 
+    public static Optional<Point2d> center(Point2d... points) {
+        return center(Arrays.asList(points));
+    }
+
     public static Optional<Point2d> center(List<Point2d> points) {
         OptionalDouble newX = points.stream().mapToDouble(x -> x.x).average();
         OptionalDouble newY = points.stream().mapToDouble(x -> x.y).average();
