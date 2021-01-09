@@ -1,0 +1,197 @@
+package production;
+
+import common.NodeType;
+import model.GraphNode;
+import model.InteriorNode;
+import model.Point2d;
+import model.TetrahedralGraph;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public class Production6 extends AbstractProduction {
+    @Override
+    public int getProductionId() {
+        return 6;
+    }
+
+    @Override
+    public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
+        verifyInteriorNodeSymbol(interiorNode, "I");
+        verifyGraphNodeListIsEmpty(graphNodeList);
+        verifyInteriorNodeIsValid(interiorNode, this::meetsProductionRequirements);
+
+        applyProduction(graph, interiorNode);
+    }
+
+    private boolean meetsProductionRequirements(InteriorNode node) {
+        List<GraphNode> cornerNodes = node.getSiblings().collect(Collectors.toList());
+
+        if (cornerNodes.size() != 4) return false;
+
+        int numOfCorrectlyPlacedNodesBetweenCornerNodes = 0;
+
+        int i = 0;
+        for (GraphNode cornerNode : cornerNodes) {
+            for (GraphNode otherCornerNode : cornerNodes.subList(i, cornerNodes.size())) {
+                double x = (cornerNode.getCoordinates().getX() + otherCornerNode.getCoordinates().getX()) / 2;
+                double y = (cornerNode.getCoordinates().getY() + otherCornerNode.getCoordinates().getY()) / 2;
+
+                boolean siblingOfCornerNode = false;
+                boolean siblingOfOtherCornerNode = false;
+
+                List<GraphNode> cornerNodeSiblings = cornerNode.getSiblings().collect(Collectors.toList());
+                for (GraphNode sibling : cornerNodeSiblings) {
+                    // Calculated node is a sibling of 'cornerNode'
+                    if (sibling.getCoordinates().getX() == x && sibling.getCoordinates().getY() == y) {
+                        siblingOfCornerNode = true;
+                    }
+                }
+
+                List<GraphNode> otherCornerNodeSiblings = otherCornerNode.getSiblings().collect(Collectors.toList());
+                for (GraphNode sibling : otherCornerNodeSiblings) {
+                    // Calculated node is a sibling of 'otherCornerNode'
+                    if (sibling.getCoordinates().getX() == x && sibling.getCoordinates().getY() == y) {
+                        siblingOfOtherCornerNode = true;
+                    }
+                }
+
+                if (siblingOfCornerNode && siblingOfOtherCornerNode) {
+                    numOfCorrectlyPlacedNodesBetweenCornerNodes++;
+                }
+            }
+            i++;
+        }
+
+        if (numOfCorrectlyPlacedNodesBetweenCornerNodes != 4) return false;
+
+        return true;
+    }
+
+    private void applyProduction(TetrahedralGraph graph, InteriorNode rootInteriorNode) {
+        rootInteriorNode.setSymbol("i");
+        int subgraphLevel = rootInteriorNode.getLevel() + 1;
+
+        List<GraphNode> corners = rootInteriorNode.getSiblings().collect(Collectors.toList());
+
+        double left = corners
+                .stream()
+                .map(x -> x.getCoordinates().getX())
+                .min(Double::compareTo)
+                .get();
+        double right = corners
+                .stream()
+                .map(x -> x.getCoordinates().getX())
+                .max(Double::compareTo)
+                .get();
+        double bottom = corners
+                .stream()
+                .map(x -> x.getCoordinates().getY())
+                .min(Double::compareTo)
+                .get();
+        double top = corners
+                .stream()
+                .map(x -> x.getCoordinates().getY())
+                .max(Double::compareTo)
+                .get();
+        double midTop1 = corners
+                .stream()
+                .map(x -> x.getCoordinates().getY())
+                .max(Double::compareTo)
+                .get();
+
+        GraphNode center = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d((left + right) / 2, (top + bottom) / 2));
+        GraphNode topLeft = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d(left, top));
+        GraphNode topRight = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d(right, top));
+        GraphNode bottomLeft = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d(left, bottom));
+        GraphNode bottomRight = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d(right, bottom));
+
+
+        GraphNode midLeft = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d(left, (top + bottom) / 2));
+        GraphNode midRight = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d(right, (top + bottom) / 2));
+        GraphNode midTop = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d((left + right) / 2, top));
+        GraphNode midBottom = graph.insertGraphNode(
+                subgraphLevel,
+                "E",
+                new Point2d((left + right) / 2, bottom));
+
+        InteriorNode upperLeft = graph.insertInteriorNode(
+                subgraphLevel,
+                "I");
+        InteriorNode upperRight = graph.insertInteriorNode(
+                subgraphLevel,
+                "I");
+        InteriorNode lowerLeft = graph.insertInteriorNode(
+                subgraphLevel,
+                "I");
+        InteriorNode lowerRight = graph.insertInteriorNode(
+                subgraphLevel,
+                "I");
+
+        graph.connectNodes(rootInteriorNode, upperLeft);
+        graph.connectNodes(rootInteriorNode, upperRight);
+        graph.connectNodes(rootInteriorNode, lowerRight);
+        graph.connectNodes(rootInteriorNode, lowerLeft);
+
+        graph.connectNodes(upperLeft, topLeft);
+        graph.connectNodes(upperLeft, midTop);
+        graph.connectNodes(upperLeft, center);
+        graph.connectNodes(upperLeft, midLeft);
+
+        graph.connectNodes(upperRight, midTop);
+        graph.connectNodes(upperRight, topRight);
+        graph.connectNodes(upperRight, midRight);
+        graph.connectNodes(upperRight, center);
+
+        graph.connectNodes(lowerRight, center);
+        graph.connectNodes(lowerRight, midRight);
+        graph.connectNodes(lowerRight, bottomRight);
+        graph.connectNodes(lowerRight, midBottom);
+
+        graph.connectNodes(lowerLeft, midLeft);
+        graph.connectNodes(lowerLeft, center);
+        graph.connectNodes(lowerLeft, midBottom);
+        graph.connectNodes(lowerLeft, bottomLeft);
+
+        graph.connectNodes(topLeft, midTop);
+        graph.connectNodes(midTop, topRight);
+        graph.connectNodes(topRight, midRight);
+        graph.connectNodes(midRight, bottomRight);
+        graph.connectNodes(bottomRight, midBottom);
+        graph.connectNodes(midBottom, bottomLeft);
+        graph.connectNodes(bottomLeft, midLeft);
+        graph.connectNodes(midLeft, topLeft);
+
+        graph.connectNodes(center, midTop);
+        graph.connectNodes(center, midRight);
+        graph.connectNodes(center, midBottom);
+        graph.connectNodes(center, midLeft);
+    }
+}
