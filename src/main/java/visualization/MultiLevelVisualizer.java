@@ -3,6 +3,7 @@ package visualization;
 import model.TetrahedralGraph;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -15,33 +16,37 @@ public class MultiLevelVisualizer implements Visualizer {
     }
 
     public void displayGraph(TetrahedralGraph graph, String title) {
-        Object lock = new Object();
+        try {
+            Object lock = new Object();
 
-        SwingUtilities.invokeLater(() -> {
-            JFrame mainFrame = new JFrame(title);
-            mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            JTabbedPane tabbedPane = tabbedLevelViewFactory.createTabbedLevelView(graph);
+            SwingUtilities.invokeLater(() -> {
+                JFrame mainFrame = new JFrame(title);
+                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                JTabbedPane tabbedPane = tabbedLevelViewFactory.createTabbedLevelView(graph);
 
-            mainFrame.getContentPane().add(tabbedPane);
-            mainFrame.setSize(800, 800);
-            mainFrame.setVisible(true);
-            mainFrame.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    super.windowClosing(e);
-                    synchronized (lock) {
-                        lock.notify();
+                mainFrame.getContentPane().add(tabbedPane);
+                mainFrame.setSize(800, 800);
+                mainFrame.setVisible(true);
+                mainFrame.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        super.windowClosing(e);
+                        synchronized (lock) {
+                            lock.notify();
+                        }
                     }
-                }
+                });
             });
-        });
 
-        synchronized (lock) {
-            try {
-                lock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (HeadlessException e) {
+            // Ignore headless mode
         }
     }
 }
