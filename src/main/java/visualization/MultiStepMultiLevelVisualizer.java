@@ -3,6 +3,7 @@ package visualization;
 import model.TetrahedralGraph;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -13,8 +14,12 @@ public class MultiStepMultiLevelVisualizer implements MultiStepVisualizer {
 
     @Override
     public void addStep(TetrahedralGraph graph) {
-        JTabbedPane stepTabbedPane = tabbedLevelViewFactory.createTabbedLevelView(graph);
-        steps.add(stepTabbedPane);
+        try {
+            JTabbedPane stepTabbedPane = tabbedLevelViewFactory.createTabbedLevelView(graph);
+            steps.add(stepTabbedPane);
+        } catch (HeadlessException e) {
+            // Ignore headless mode
+        }
     }
 
     @Override
