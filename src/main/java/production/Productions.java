@@ -8,6 +8,7 @@ public class Productions {
     public static final Production[] productions = {
             new Production1(),
             new Production2(),
+            new Production3(),
             new Production6()
     };
 
