@@ -4,17 +4,17 @@ import model.GraphNode;
 import model.InteriorNode;
 import model.Point2d;
 import model.TetrahedralGraph;
+import org.javatuples.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestGraphs {
+public class Production6TestGraphs {
     public static TetrahedralGraph getProduction6CorrectLeftSide() {
-        Map<Integer, Pair<Float>> nodesMap = new HashMap<>();
+        Map<Integer, Pair<Float, Float>> nodesMap = new HashMap<>();
 
-        // nodesMap.put(0, new Pair<>(0.0f, 0.0f)); // center
         nodesMap.put(1, new Pair<>(-1.0f, -1.0f)); // bottomLeft
         nodesMap.put(2, new Pair<>(-1.0f, 0.0f)); // midLeft
         nodesMap.put(3, new Pair<>(-1.0f, 1.0f)); // topLeft
@@ -24,7 +24,7 @@ public class TestGraphs {
         nodesMap.put(7, new Pair<>(1.0f, -1.0f)); // bottomRight
         nodesMap.put(8, new Pair<>(0.0f, -1.0f)); // midBottom
 
-        List<Pair<Integer>> links = new ArrayList<>();
+        List<Pair<Integer, Integer>> links = new ArrayList<>();
 
         links.add(new Pair<>(0, 3));
         links.add(new Pair<>(0, 5));
@@ -43,9 +43,8 @@ public class TestGraphs {
     }
 
     public static TetrahedralGraph getProduction6CorrectLeftSideWithAdditionalNodesOnRight() {
-        Map<Integer, Pair<Float>> nodesMap = new HashMap<>();
+        Map<Integer, Pair<Float, Float>> nodesMap = new HashMap<>();
 
-        // nodesMap.put(0, new Pair<>(0.0f, 0.0f)); // center
         nodesMap.put(1, new Pair<>(-1.0f, -1.0f)); // bottomLeft
         nodesMap.put(2, new Pair<>(-1.0f, 0.0f)); // midLeft
         nodesMap.put(3, new Pair<>(-1.0f, 1.0f)); // topLeft
@@ -59,7 +58,7 @@ public class TestGraphs {
         nodesMap.put(10, new Pair<>(2.0f, 0.0f)); // rightCenter
         nodesMap.put(11, new Pair<>(2.0f, -1.0f)); // rightBottom
 
-        List<Pair<Integer>> links = new ArrayList<>();
+        List<Pair<Integer, Integer>> links = new ArrayList<>();
 
         links.add(new Pair<>(0, 3));
         links.add(new Pair<>(0, 5));
@@ -82,7 +81,7 @@ public class TestGraphs {
     }
 
     public static TetrahedralGraph getProduction6CorrectLeftSideInGreaterGraph() {
-        Map<Integer, Pair<Float>> nodesMap = new HashMap<>();
+        Map<Integer, Pair<Float, Float>> nodesMap = new HashMap<>();
 
         // nodesMap.put(0, new Pair<>(0.0f, 0.0f)); // center
         nodesMap.put(1, new Pair<>(-1.0f, -1.0f)); // bottomLeft
@@ -102,7 +101,7 @@ public class TestGraphs {
         nodesMap.put(14, new Pair<>(2.0f, 0.0f));
         nodesMap.put(15, new Pair<>(2.0f, -1.0f));
 
-        List<Pair<Integer>> links = new ArrayList<>();
+        List<Pair<Integer, Integer>> links = new ArrayList<>();
 
         links.add(new Pair<>(0, 3));
         links.add(new Pair<>(0, 5));
@@ -137,7 +136,7 @@ public class TestGraphs {
     }
 
     public static TetrahedralGraph getProduction6LeftSideWithBrokenLink() {
-        Map<Integer, Pair<Float>> nodesMap = new HashMap<>();
+        Map<Integer, Pair<Float, Float>> nodesMap = new HashMap<>();
 
         // nodesMap.put(0, new Pair<>(0.0f, 0.0f)); // center
         nodesMap.put(1, new Pair<>(-1.0f, -1.0f)); // bottomLeft
@@ -151,7 +150,7 @@ public class TestGraphs {
         // break node
         nodesMap.put(9, new Pair<>(0.5f, 1.0f)); // between
 
-        List<Pair<Integer>> links = new ArrayList<>();
+        List<Pair<Integer, Integer>> links = new ArrayList<>();
 
         links.add(new Pair<>(0, 3));
         links.add(new Pair<>(0, 5));
@@ -172,7 +171,7 @@ public class TestGraphs {
     }
 
     public static TetrahedralGraph getProduction6LeftSideWithMissingNode() {
-        Map<Integer, Pair<Float>> nodesMap = new HashMap<>();
+        Map<Integer, Pair<Float, Float>> nodesMap = new HashMap<>();
 
         // nodesMap.put(0, new Pair<>(0.0f, 0.0f)); // center
         nodesMap.put(1, new Pair<>(-1.0f, -1.0f)); // bottomLeft
@@ -184,7 +183,7 @@ public class TestGraphs {
         nodesMap.put(7, new Pair<>(1.0f, -1.0f)); // bottomRight
         nodesMap.put(8, new Pair<>(0.0f, -1.0f)); // midBottom
 
-        List<Pair<Integer>> links = new ArrayList<>();
+        List<Pair<Integer, Integer>> links = new ArrayList<>();
 
         links.add(new Pair<>(0, 3));
         links.add(new Pair<>(0, 5));
@@ -202,7 +201,7 @@ public class TestGraphs {
     }
 
     public static TetrahedralGraph getProduction6LeftSideWithIncorrectCoordinates() {
-        Map<Integer, Pair<Float>> nodesMap = new HashMap<>();
+        Map<Integer, Pair<Float, Float>> nodesMap = new HashMap<>();
 
         // nodesMap.put(0, new Pair<>(0.0f, 0.0f)); // center
         nodesMap.put(1, new Pair<>(-1.0f, -1.0f)); // bottomLeft
@@ -214,7 +213,7 @@ public class TestGraphs {
         nodesMap.put(7, new Pair<>(1.0f, -1.0f)); // bottomRight
         nodesMap.put(8, new Pair<>(0.0f, -1.0f)); // midBottom
 
-        List<Pair<Integer>> links = new ArrayList<>();
+        List<Pair<Integer, Integer>> links = new ArrayList<>();
 
         links.add(new Pair<>(0, 3));
         links.add(new Pair<>(0, 5));
@@ -232,7 +231,7 @@ public class TestGraphs {
         return prepareGraph(nodesMap, links);
     }
 
-    private static TetrahedralGraph prepareGraph(Map<Integer, Pair<Float>> nodesCoords, List<Pair<Integer>> links) {
+    private static TetrahedralGraph prepareGraph(Map<Integer, Pair<Float, Float>> nodesCoords, List<Pair<Integer, Integer>> links) {
         int graphLevel = 0;
 
         TetrahedralGraph graph = new TetrahedralGraph();
@@ -241,37 +240,19 @@ public class TestGraphs {
         Map<Integer, GraphNode> nodesMap = new HashMap<>();
 
         nodesCoords.forEach((key, value) -> {
-            GraphNode newNode = graph.insertGraphNode(graphLevel, "E", new Point2d(value.getLeft(), value.getRight()));
+            GraphNode newNode = graph.insertGraphNode(graphLevel, "E", new Point2d(value.getValue0(), value.getValue1()));
             nodesMap.put(key, newNode);
         });
 
         // connect with center
-        links.stream().filter(link -> link.getLeft() == 0)
-                .forEach(link -> graph.connectNodes(center, nodesMap.get(link.getRight())));
+        links.stream().filter(link -> link.getValue0() == 0)
+                .forEach(link -> graph.connectNodes(center, nodesMap.get(link.getValue1())));
 
         // connect with other nodes
-        links.stream().filter(link -> link.getLeft() != 0)
-                .forEach(link -> graph.connectNodes(nodesMap.get(link.getLeft()), nodesMap.get(link.getRight())));
+        links.stream().filter(link -> link.getValue0() != 0)
+                .forEach(link -> graph.connectNodes(nodesMap.get(link.getValue0()), nodesMap.get(link.getValue1())));
 
         return graph;
-    }
-
-    private static class Pair<T> {
-        private T left;
-        private T right;
-
-        public Pair(T left, T right) {
-            this.left = left;
-            this.right = right;
-        }
-
-        public T getLeft() {
-            return left;
-        }
-
-        public T getRight() {
-            return right;
-        }
     }
 
 }

@@ -16,11 +16,11 @@ public class Assignment4Processor extends AbstractProcessor {
     }
 
     @Override
-    public TetrahedralGraph processGraph(TetrahedralGraph graph) {
+    protected TetrahedralGraph processGraphInternal(TetrahedralGraph graph) {
         InteriorNode entryNode = createLeftSideOfProduction(graph);
 
         // production 6
-        getProductionById(6).apply(graph, entryNode, Collections.emptyList());
+        applyProduction(6, graph, entryNode, Collections.emptyList());
 
         return graph;
     }
