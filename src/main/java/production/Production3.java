@@ -31,12 +31,11 @@ public class Production3 extends AbstractProduction {
         int lonelyCornerNodes = 0, cornerNodesSeparateByOther = 0;
 
         for (GraphNode cornerNode : cornerNodes) {
-            List<GraphNode> cornerSiblings = cornerNode.getSiblings().collect(Collectors.toList());
-            if(cornerSiblings.size() != 2) return false;
+            long numOfCornerSiblings = cornerNode.getSiblings().filter(cornerNodes::contains).count();
 
-            if (cornerNodes.containsAll(cornerSiblings)) {
+            if (numOfCornerSiblings == 2) {
                 // siblings of corner nodes (x2, y2) and (x4, y4) go here
-                Optional<Boolean> properSiblings = cornerSiblings.stream()
+                Optional<Boolean> properSiblings = cornerNode.getSiblings().filter(cornerNodes::contains)
                         .map(otherNode ->
                                 ((otherNode.getCoordinates().getX() ==
                                         cornerNode.getCoordinates().getX()) ||
@@ -49,10 +48,10 @@ public class Production3 extends AbstractProduction {
                     return false;
 
                 lonelyCornerNodes++;
-            } else {
+            } else if (numOfCornerSiblings == 1) {
                 // siblings of corner nodes (x1, y1) and (x3, y3) go here
                 // first sibling is one of corners
-                Optional<Boolean> properSiblings = cornerSiblings.stream()
+                Optional<Boolean> properSiblings = cornerNode.getSiblings().filter(cornerNodes::contains)
                         .filter(cornerNodes::contains)
                         .map(otherNode ->
                                 ((otherNode.getCoordinates().getX() ==
@@ -66,28 +65,29 @@ public class Production3 extends AbstractProduction {
                     return false;
 
                 // second sibling is between corners
-                properSiblings = cornerSiblings.stream()
+                Optional<Boolean> correctMiddleNodeExist = cornerNode.getSiblings()
                         .filter(otherNode -> !cornerNodes.contains(otherNode))
-                        .map(middleNode -> {
-                            List<GraphNode> middleNodeSiblings = middleNode.getSiblings().collect(Collectors.toList());
-                            if(middleNodeSiblings.size() != 2) return false;
+                        .map(otherNode -> {
+                            List<GraphNode> otherNodeSiblings = otherNode.getSiblings().collect(Collectors.toList());
 
-                            double x = middleNodeSiblings.stream()
+                            double x = otherNodeSiblings.stream()
                                     .map(middleNodeSibling -> middleNodeSibling.getCoordinates().getX())
                                     .reduce(0.0, Double::sum);
 
-                            double y = middleNodeSiblings.stream()
+                            double y = otherNodeSiblings.stream()
                                     .map(middleNodeSibling -> middleNodeSibling.getCoordinates().getY())
                                     .reduce(0.0, Double::sum);
 
-                            return middleNode.getCoordinates().getX() == x / 2.0 && middleNode.getCoordinates().getY() == y / 2.0;
+                            return otherNode.getCoordinates().getX() == (x / 2.0) && otherNode.getCoordinates().getY() == (y / 2.0);
                         })
-                        .reduce(Boolean::logicalAnd);
+                        .reduce(Boolean::logicalOr);
 
-                if (!(properSiblings.isPresent() && properSiblings.get()))
+                if (!(correctMiddleNodeExist.isPresent() && correctMiddleNodeExist.get()))
                     return false;
 
                 cornerNodesSeparateByOther++;
+            } else {
+                return false;
             }
         }
 
