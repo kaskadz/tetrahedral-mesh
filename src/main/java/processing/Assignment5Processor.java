@@ -6,8 +6,12 @@ import model.TetrahedralGraph;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Assignment7Processor extends AbstractProcessor {
+public class Assignment5Processor extends AbstractProcessor {
     private final static String PROCESSOR_ID = "zad5";
+    @Override
+    public String getProcessorId() {
+        return PROCESSOR_ID;
+    }
 
     public static Comparator<GraphNode> byX = Comparator.comparing(
             x -> x.getCoordinates().getX()
@@ -17,13 +21,10 @@ public class Assignment7Processor extends AbstractProcessor {
             x -> x.getCoordinates().getY()
     );
 
-    @Override
-    public String getProcessorId() {
-        return PROCESSOR_ID;
-    }
+
 
     @Override
-    public TetrahedralGraph processGraph(TetrahedralGraph graph) {
+    public TetrahedralGraph processGraphInternal(TetrahedralGraph graph) {
 
         graph = new Assignment1Processor().processGraph(graph);
 
@@ -46,7 +47,7 @@ public class Assignment7Processor extends AbstractProcessor {
             nodes.sort(byX.thenComparing(byY));
 
 
-            getProductionById(7).apply(graph, null, nodes);
+            applyProduction(7, graph, null, nodes);
 
 //            break;
 
