@@ -8,7 +8,8 @@ public class Processors {
     public static final Processor[] processors = {
             new Assignment1Processor(),
             new Assignment2Processor(),
-            new Assignment4Processor()
+            new Assignment3Processor(),
+            new Assignment4Processor(),
     };
 
     public static final Map<String, Processor> processorsMap = Arrays.stream(processors)
