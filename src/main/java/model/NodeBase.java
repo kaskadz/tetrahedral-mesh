@@ -7,6 +7,7 @@ import org.graphstream.graph.Element;
 import org.graphstream.graph.Node;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 public class NodeBase {
     private final TetrahedralGraph graph;
@@ -59,6 +60,22 @@ public class NodeBase {
         return StreamUtils.asStream(getNode().getBreadthFirstIterator())
                 .map(Element::getId)
                 .iterator();
+    }
+
+    public Stream<String> getSiblingsIds() {
+        return getNode().neighborNodes()
+                .map(NodeWrapper::new)
+                .filter(x -> x.getNodeType() == NodeType.REGULAR)
+                .map(NodeWrapper::getNode)
+                .map(Element::getId);
+    }
+
+    public Stream<GraphNode> getSiblings() {
+        return getSiblingsIds().map(x -> getGraph().getGraphNode(x));
+    }
+
+    public boolean isConnected(String nodeId){
+        return getSiblingsIds().anyMatch(x -> x.equals(nodeId));
     }
 
     @Override
