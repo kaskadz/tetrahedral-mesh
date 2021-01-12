@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 public class Processors {
     public static final Processor[] processors = {
             new Assignment1Processor(),
+            new Assignment2Processor(),
+            new Assignment3Processor(),
+            new Assignment4Processor(),
             new Assignment7Processor()
     };
 
