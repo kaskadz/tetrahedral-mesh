@@ -25,7 +25,8 @@ import static utils.Production7TestGraphs.getBottomExteriorNodes;
 public class Production7Tests extends AbstractProductionTest {
     private final static Production prod = new Production7();
     private final MultiStepMultiLevelVisualizer visualizer = new MultiStepMultiLevelVisualizer();
-    private final static boolean visualMode = true;
+    private final static boolean visualMode = false;
+
     public static Comparator<GraphNode> byX = Comparator.comparing(
             x -> x.getCoordinates().getX()
     );
@@ -47,7 +48,7 @@ public class Production7Tests extends AbstractProductionTest {
 
         List<InteriorNode> filteredNodes = side1InteriorNodes
                 .stream()
-                .filter(node -> node.isConnected(bottomExterior1.getId()) || node.isConnected(bottomExterior3.getId()))
+                .filter(node -> node.isDirectlyConnectedWith(bottomExterior1.getId()) || node.isDirectlyConnectedWith(bottomExterior3.getId()))
                 .collect(Collectors.toList());
         assertEquals(2, filteredNodes.size());
     }
@@ -61,10 +62,10 @@ public class Production7Tests extends AbstractProductionTest {
 
         String topNodeId = topExternalNodes.get(0).getId();
         //check if top nodes are connected properly
-        assertTrue(topInteriorNodes.stream().allMatch(node -> node.isConnected(topNodeId)));
+        assertTrue(topInteriorNodes.stream().allMatch(node -> node.isDirectlyConnectedWith(topNodeId)));
         InteriorNode topInterior1 = topInteriorNodes.get(0);
         InteriorNode topInterior2 = topInteriorNodes.get(1);
-        assertFalse(topInterior1.isConnected(topInterior2.getId()));
+        assertFalse(topInterior1.isDirectlyConnectedWith(topInterior2.getId()));
 
 
         int bottomLevel = topGraphLevel + 1;
@@ -81,11 +82,11 @@ public class Production7Tests extends AbstractProductionTest {
         GraphNode bottomExterior3 = getUniqNodeByCords(bottomExternalNodes, cords2);
 
         // checks if bottom exterior nodes are connected properly
-        assertTrue(bottomExterior2.isConnected(bottomExterior1.getId()));
-        assertTrue(bottomExterior2.isConnected(bottomExterior3.getId()));
-        assertFalse(bottomExterior1.isConnected(bottomExterior3.getId()));
+        assertTrue(bottomExterior2.isDirectlyConnectedWith(bottomExterior1.getId()));
+        assertTrue(bottomExterior2.isDirectlyConnectedWith(bottomExterior3.getId()));
+        assertFalse(bottomExterior1.isDirectlyConnectedWith(bottomExterior3.getId()));
 
-        assertTrue(bottomInteriorNodes.stream().allMatch(node -> node.isConnected(bottomExterior2.getId())));
+        assertTrue(bottomInteriorNodes.stream().allMatch(node -> node.isDirectlyConnectedWith(bottomExterior2.getId())));
 
 
         List<InteriorNode> side1InteriorNodes = topInterior1.getChildren().collect(Collectors.toList());
@@ -106,12 +107,12 @@ public class Production7Tests extends AbstractProductionTest {
                 .stream()
                 .allMatch(node -> bottomInteriorsList
                         .stream()
-                        .noneMatch(interiorNode -> node.isConnected(interiorNode.getId()))));
+                        .noneMatch(interiorNode -> node.isDirectlyConnectedWith(interiorNode.getId()))));
 
         //check labels
         assertTrue(Stream
-                        .concat(bottomInteriorsList.stream(), topInteriorNodes.stream())
-                        .allMatch(node -> node.getSymbol().equals("I")));
+                .concat(bottomInteriorsList.stream(), topInteriorNodes.stream())
+                .allMatch(node -> node.getSymbol().equals("I")));
         assertTrue(Stream
                 .concat(topExternalNodes.stream(), bottomExternalNodes.stream())
                 .allMatch(node -> node.getSymbol().equals("E")));
@@ -273,7 +274,6 @@ public class Production7Tests extends AbstractProductionTest {
 
         visualizer.addStep(graph);
 
-        visualizer.displayAll("CorrectLeftSide");
         // Assert
         assertThrows(ProductionApplicationException.class, subject);
 
@@ -326,7 +326,6 @@ public class Production7Tests extends AbstractProductionTest {
 
         visualizer.addStep(graph);
 
-        visualizer.displayAll("CorrectLeftSide");
         // Assert
         assertDoesNotThrow(subject);
 

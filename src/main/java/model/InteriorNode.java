@@ -41,8 +41,8 @@ public class InteriorNode extends NodeBase {
     }
 
     @Override
-    public boolean isConnected(String nodeId) {
-        return super.isConnected(nodeId)
+    public boolean isDirectlyConnectedWith(String nodeId) {
+        return isSibling(nodeId)
                 || getChildrenIds().anyMatch(x -> x.equals(nodeId))
                 || nodeId.equals(getParentId().orElse(null));
     }

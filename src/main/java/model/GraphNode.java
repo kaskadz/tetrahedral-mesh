@@ -32,8 +32,8 @@ public class GraphNode extends NodeBase {
     }
 
     @Override
-    public boolean isConnected(String nodeId) {
-        return super.isConnected(nodeId) || getInteriorsIds().anyMatch(x -> x.equals(nodeId));
+    public boolean isDirectlyConnectedWith(String nodeId) {
+        return isSibling(nodeId) || getInteriorsIds().anyMatch(x -> x.equals(nodeId));
     }
 
 }
