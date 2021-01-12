@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Production8Tests extends AbstractProductionTest {
     private final Production production8 = new Production8();
 
-    private final boolean displayMode = true;
+    private final boolean displayMode = false;
 
     @Test
     public void shouldHaveProperNumber() {
