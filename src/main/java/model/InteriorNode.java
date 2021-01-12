@@ -40,16 +40,10 @@ public class InteriorNode extends NodeBase {
         return getChildrenIds().map(x -> getGraph().getInteriorNode(x));
     }
 
-
-    public Stream<String> getSiblingsIds() {
-        return getNode().neighborNodes()
-                .map(NodeWrapper::new)
-                .filter(x -> x.getNodeType() == NodeType.REGULAR)
-                .map(NodeWrapper::getNode)
-                .map(Element::getId);
-    }
-
-    public Stream<GraphNode> getSiblings() {
-        return getSiblingsIds().map(x -> getGraph().getGraphNode(x));
+    @Override
+    public boolean isDirectlyConnectedWith(String nodeId) {
+        return isSibling(nodeId)
+                || getChildrenIds().anyMatch(x -> x.equals(nodeId))
+                || nodeId.equals(getParentId().orElse(null));
     }
 }

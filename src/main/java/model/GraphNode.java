@@ -19,18 +19,6 @@ public class GraphNode extends NodeBase {
         return coordinates;
     }
 
-    public Stream<String> getSiblingsIds() {
-        return getNode().neighborNodes()
-                .map(NodeWrapper::new)
-                .filter(x -> x.getNodeType() == NodeType.REGULAR)
-                .map(NodeWrapper::getNode)
-                .map(Element::getId);
-    }
-
-    public Stream<GraphNode> getSiblings() {
-        return getSiblingsIds().map(x -> getGraph().getGraphNode(x));
-    }
-
     public Stream<String> getInteriorsIds() {
         return getNode().neighborNodes()
                 .map(NodeWrapper::new)
@@ -42,4 +30,10 @@ public class GraphNode extends NodeBase {
     public Stream<InteriorNode> getInteriors() {
         return getInteriorsIds().map(x -> getGraph().getInteriorNode(x));
     }
+
+    @Override
+    public boolean isDirectlyConnectedWith(String nodeId) {
+        return isSibling(nodeId) || getInteriorsIds().anyMatch(x -> x.equals(nodeId));
+    }
+
 }

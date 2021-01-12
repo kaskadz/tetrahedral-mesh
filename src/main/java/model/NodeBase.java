@@ -7,8 +7,9 @@ import org.graphstream.graph.Element;
 import org.graphstream.graph.Node;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
-public class NodeBase {
+public abstract class NodeBase {
     private final TetrahedralGraph graph;
     private final NodeWrapper nodeWrapper;
 
@@ -60,6 +61,24 @@ public class NodeBase {
                 .map(Element::getId)
                 .iterator();
     }
+
+    public Stream<String> getSiblingsIds() {
+        return getNode().neighborNodes()
+                .map(NodeWrapper::new)
+                .filter(x -> x.getNodeType() == NodeType.REGULAR)
+                .map(NodeWrapper::getNode)
+                .map(Element::getId);
+    }
+
+    public Stream<GraphNode> getSiblings() {
+        return getSiblingsIds().map(x -> getGraph().getGraphNode(x));
+    }
+
+    public boolean isSibling(String nodeId) {
+        return getSiblingsIds().anyMatch(x -> x.equals(nodeId));
+    }
+
+    abstract protected boolean isDirectlyConnectedWith(String nodeId);
 
     @Override
     public boolean equals(Object o) {
