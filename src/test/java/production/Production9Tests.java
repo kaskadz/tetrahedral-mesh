@@ -10,6 +10,7 @@ import model.TetrahedralGraph;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import visualization.MultiStepMultiLevelVisualizer;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +18,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Production9Tests extends AbstractProductionTest {
+
+    private final MultiStepMultiLevelVisualizer visualizer = new MultiStepMultiLevelVisualizer();
+    private final static boolean visualMode = true;
+
     @Test
     public void shouldHaveProperNumber() {
         // Arrange
@@ -68,21 +73,23 @@ public class Production9Tests extends AbstractProductionTest {
         graph.connectNodes(i1, e1);
         graph.connectNodes(i3, e1);
 
-        GraphNode e2 = graph.insertGraphNode(2, "E", new Point2d(4, 4));
+        GraphNode e2 = graph.insertGraphNode(2, "E", new Point2d(1, 1));
         graph.connectNodes(i2, e2);
         graph.connectNodes(i4, e2);
 
-        GraphNode e3 = graph.insertGraphNode(2, "E", new Point2d(2, 2));
+        GraphNode e3 = graph.insertGraphNode(2, "E", new Point2d(0.5, 0.5));
         graph.connectNodes(i1, e3);
         graph.connectNodes(i2, e3);
         graph.connectNodes(e1, e3);
         graph.connectNodes(e2, e3);
 
-        GraphNode e4 = graph.insertGraphNode(2, "E", new Point2d(2, 2));
+        GraphNode e4 = graph.insertGraphNode(2, "E", new Point2d(0.5, 0.5));
         graph.connectNodes(i3, e4);
         graph.connectNodes(i4, e4);
         graph.connectNodes(e1, e4);
         graph.connectNodes(e2, e4);
+
+        visualizer.addStep(graph);
 
         Production prod = new Production9();
         List<GraphNode> nodes = Lists.newArrayList(initialNode, e1, e2, e3, e4);
@@ -92,5 +99,9 @@ public class Production9Tests extends AbstractProductionTest {
 
         // Assert
         assertDoesNotThrow(subject);
+        visualizer.addStep(graph);
+
+        // visualize
+        if (visualMode) visualizer.displayAll("CorrectLeftSide");
     }
 }
