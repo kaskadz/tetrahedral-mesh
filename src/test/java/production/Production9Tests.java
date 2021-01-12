@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Production9Tests extends AbstractProductionTest {
 
     private final MultiStepMultiLevelVisualizer visualizer = new MultiStepMultiLevelVisualizer();
-    private final static boolean visualMode = true;
+    private final static boolean visualMode = false;
 
     @Test
     public void shouldHaveProperNumber() {
