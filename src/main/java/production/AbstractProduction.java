@@ -47,7 +47,7 @@ public abstract class AbstractProduction implements Production {
 
     protected void verifyGraphNodeListIsNotEmpty(List<GraphNode> graphNodeList) {
         verifyGraphNodeListIsNotNull(graphNodeList);
-        if (!graphNodeList.isEmpty()) {
+        if (graphNodeList.isEmpty()) {
             throwProductionApplicationException("graphNodeList should not be empty");
         }
     }
