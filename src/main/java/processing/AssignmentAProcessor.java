@@ -60,7 +60,7 @@ public class AssignmentAProcessor extends AbstractProcessor {
 
 
             applyProduction(7, graph, null, nodes);
-
-            return graph;
+        }
+        return graph;
     }
 }
