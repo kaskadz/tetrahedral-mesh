@@ -61,6 +61,13 @@ public class AssignmentAProcessor extends AbstractProcessor {
 
             applyProduction(7, graph, null, nodes);
         }
+        
+        List<GraphNode> nodes_2 = graph.getGraphNodesByLevel(graph.getMinLevel() + 2).stream().filter(g -> (g.getCoordinates().getX() == 1 && g.getCoordinates().getY() == 0)).collect(Collectors.toList());
+        nodes_2.addAll(graph.getGraphNodesByLevel(graph.getMaxLevel())
+                .stream().filter(g -> (g.getCoordinates().getX() == 0 || g.getCoordinates().getX() == 0.5 || g.getCoordinates().getX() == 1) &&
+                        g.getCoordinates().getY() == 0).collect(Collectors.toList()));
+        applyProduction(8, graph, null, nodes_2);
+
         return graph;
     }
 }
