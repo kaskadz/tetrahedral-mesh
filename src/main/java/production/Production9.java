@@ -118,9 +118,4 @@ public class Production9 extends AbstractProduction {
         graph.mergeNodes(lowerNodesSorted.get(1), lowerNodesSorted.get(2));
     }
 
-    protected void verifyExteriorNodesAreValid(List<GraphNode> graphNode, Predicate<List<GraphNode>> exteriorNodePredicate) {
-        if (!exteriorNodePredicate.test(graphNode)) {
-            throwProductionApplicationException("Invalid exterior nodes");
-        }
-    }
 }
