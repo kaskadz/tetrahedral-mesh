@@ -9,6 +9,7 @@ public class Productions {
             new Production1(),
             new Production2(),
             new Production3(),
+            new Production4(),
             new Production5(),
             new Production6(),
             new Production7(),

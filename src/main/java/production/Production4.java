@@ -11,10 +11,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Production5 extends AbstractProduction {
+public class Production4 extends AbstractProduction {
     @Override
     public int getProductionId() {
-        return 5;
+        return 4;
     }
 
     @Override
@@ -38,16 +38,17 @@ public class Production5 extends AbstractProduction {
             List<GraphNode> siblings = cornerNode.getSiblings().collect(Collectors.toList());
             List<GraphNode> cornerNodesSiblings = siblings.stream().filter(cornerNodes::contains).collect(Collectors.toList());
             if (cornerNodesSiblings.size() == 0) {
-
             } else if (cornerNodesSiblings.size() == 1) {
                 directlyConnectedCornerNodes += 1;
+            } else if (cornerNodesSiblings.size() == 2) {
+                directlyConnectedCornerNodes += 2;
             } else {
                 return false;
             }
         }
-        if (directlyConnectedCornerNodes != 2) return false;
+        if (!(directlyConnectedCornerNodes == 4)) return false;
 
-//      sprawdzam czy dokładnie 3 pary nodów mają wspólny wierzchołek, który jest dokładnie na środku pomiędzy nimi
+//      sprawdzam czy dokładnie 2 pary nodów mają wspólny wierzchołek, który jest dokładnie na środku pomiędzy nimi
         int nodesBetweenTwo = 0;
         for (GraphNode firstNode : cornerNodes) {
             for (GraphNode secondNode : cornerNodes) {
@@ -58,15 +59,15 @@ public class Production5 extends AbstractProduction {
                             .collect(Collectors.toList());
                     boolean isNodeBetweenTwo = commonSiblings
                             .stream()
-                            .anyMatch(common -> (common.getCoordinates().getX() == (firstNode.getCoordinates().getX() + secondNode.getCoordinates().getX()) / 2) &&
-                                    (common.getCoordinates().getY() == (firstNode.getCoordinates().getY() + secondNode.getCoordinates().getY()) / 2));
+                            .anyMatch(common -> ((common.getCoordinates().getX() == (firstNode.getCoordinates().getX() + secondNode.getCoordinates().getX()) / 2) &&
+                                    (common.getCoordinates().getY() == (firstNode.getCoordinates().getY() + secondNode.getCoordinates().getY()) / 2)) && common.getSymbol().equals("E"));
                     if (isNodeBetweenTwo) {
                         nodesBetweenTwo += 1;
                     }
                 }
             }
         }
-        if (nodesBetweenTwo != 6) {
+        if (nodesBetweenTwo != 4) {
             return false;
         }
 
