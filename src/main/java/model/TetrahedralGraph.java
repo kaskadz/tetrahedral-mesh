@@ -148,6 +148,10 @@ public class TetrahedralGraph {
         return edge;
     }
 
+    public Edge removeEdge(NodeBase node1, NodeBase node2) {
+        return graph.removeEdge(node1.getNode(), node2.getNode());
+    }
+
     public void mergeNodes(GraphNode n1, GraphNode n2) {
         Set<String> n2Siblings = n2.getSiblingsIds().collect(Collectors.toSet());
         List<GraphNode> savedSiblings = n1.getSiblings()

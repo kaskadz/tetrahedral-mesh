@@ -47,7 +47,7 @@ public abstract class AbstractProduction implements Production {
 
     protected void verifyGraphNodeListIsNotEmpty(List<GraphNode> graphNodeList) {
         verifyGraphNodeListIsNotNull(graphNodeList);
-        if (!graphNodeList.isEmpty()) {
+        if (graphNodeList.isEmpty()) {
             throwProductionApplicationException("graphNodeList should not be empty");
         }
     }
@@ -55,7 +55,7 @@ public abstract class AbstractProduction implements Production {
     protected void verifyGraphNodeListSize(List<GraphNode> graphNodeList, int expectedSize) {
         verifyGraphNodeListIsNotNull(graphNodeList);
         if (graphNodeList.size() != expectedSize) {
-            throwProductionApplicationException("graphNodeList is not empty");
+            throwProductionApplicationException("graphNodeList size not match expectedSize");
         }
     }
 

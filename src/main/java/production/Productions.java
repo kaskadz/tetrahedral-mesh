@@ -11,6 +11,8 @@ public class Productions {
             new Production3(),
             new Production5(),
             new Production6(),
+            new Production7(),
+            new Production8(),
             new Production9()
     };
 
