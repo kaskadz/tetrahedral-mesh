@@ -26,7 +26,7 @@ public class Production9 extends AbstractProduction {
     @Override
     public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
         verifyInteriorNodeIsNull(interiorNode);
-        verifyGraphNodeListSize(graphNodeList, 5);
+        verifyGraphNodeListSize(graphNodeList, 4);
         verifyExteriorNodesAreValid(graphNodeList, this::meetsProductionRequirements);
 
         applyProduction(graph, graphNodeList);
@@ -34,7 +34,6 @@ public class Production9 extends AbstractProduction {
 
     private boolean meetsProductionRequirements(List<GraphNode> nodes) {
 
-        GraphNode topNode = nodes.get(0);
         List<GraphNode> lowerNodesSorted = getLowerNodesSorted(nodes);
         if (!areLowerNodesCoordinatesCorrect(lowerNodesSorted)
                 || !areLowerNodesConnectedCorrectly(lowerNodesSorted)) {
@@ -58,15 +57,23 @@ public class Production9 extends AbstractProduction {
 
         return getCommonParent(interiorNodes.get(0), interiorNodes.get(1))
                 .map(parent1 -> getCommonParent(interiorNodes.get(2), interiorNodes.get(3))
-                        .map(parent2 -> areTopLevelInteriorNodesCorrect(parent1, parent2, topNode))
-                        .orElse(false))
-                .orElse(false);
+                        .map(parent2 -> getCommonSiblingNode(parent1, parent2)
+                                .map(topNode -> areTopLevelInteriorNodesCorrect(parent1, parent2, topNode)
+                                ).orElse(false)
+                        ).orElse(false)
+                ).orElse(false);
     }
 
     private boolean areTopLevelInteriorNodesCorrect(InteriorNode node1, InteriorNode node2, GraphNode topNode) {
         return !node1.equals(node2)
                 && node1.getSiblings().anyMatch(topNode::equals)
                 && node2.getSiblings().anyMatch(topNode::equals);
+    }
+
+    private Optional<GraphNode> getCommonSiblingNode(InteriorNode node1, InteriorNode node2) {
+        return node1.getSiblings()
+                .filter(node -> node2.getSiblings().anyMatch(node::equals))
+                .findFirst();
     }
 
     private Optional<InteriorNode> getCommonInnerNode(GraphNode node1, GraphNode node2) {
@@ -81,7 +88,7 @@ public class Production9 extends AbstractProduction {
     }
 
     private List<GraphNode> getLowerNodesSorted(List<GraphNode> nodes) {
-        return nodes.subList(1, 5).stream()
+        return nodes.stream()
                 .sorted(Comparator
                         .comparingDouble((GraphNode x) -> x.getCoordinates().getX())
                         .thenComparingDouble(x -> x.getCoordinates().getY()))
