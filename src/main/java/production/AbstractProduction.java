@@ -59,6 +59,12 @@ public abstract class AbstractProduction implements Production {
         }
     }
 
+    protected void verifyExteriorNodesAreValid(List<GraphNode> graphNode, Predicate<List<GraphNode>> exteriorNodePredicate) {
+        if (!exteriorNodePredicate.test(graphNode)) {
+            throwProductionApplicationException("Invalid exterior nodes");
+        }
+    }
+
     private void verifyGraphNodeListIsNotNull(List<GraphNode> graphNodeList) {
         if (graphNodeList == null) {
             throwProductionApplicationException("graphNodeList should not be null");
