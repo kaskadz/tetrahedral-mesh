@@ -17,6 +17,10 @@ public abstract class AbstractProcessor implements Processor {
         this.multiStepVisualizer = multiStepVisualizer;
     }
 
+    public MultiStepVisualizer getMultiStepVisualizer(){
+        return this.multiStepVisualizer;
+    }
+
     @Override
     public TetrahedralGraph processGraph(TetrahedralGraph graph) {
         multiStepVisualizer.addStep(graph);

@@ -13,7 +13,8 @@ public class Processors {
             new Assignment5Processor(),
             new Assignment6Processor(),
             new Assignment7Processor(),
-            new AssignmentAProcessor()
+            new AssignmentAProcessor(),
+            new Assignment13TestProcessor()
     };
 
     public static final Map<String, Processor> processorsMap = Arrays.stream(processors)
