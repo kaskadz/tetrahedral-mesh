@@ -23,7 +23,7 @@ import static utils.Production13TestGraphs.createCorrectGraph;
 public class Production13Tests extends AbstractProductionTest {
     private final static Production prod = new Production13();
     private final MultiStepMultiLevelVisualizer visualizer = new MultiStepMultiLevelVisualizer();
-    private final static boolean visualMode = true;
+    private final static boolean visualMode = false;
 
     private static GraphNode getUniqNodeByCords(Collection<GraphNode> nodes, Point2d cords) {
         List<GraphNode> filteredNodes = nodes
