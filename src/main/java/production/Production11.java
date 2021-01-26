@@ -21,6 +21,12 @@ public class Production11 extends AbstractProduction {
         return 11;
     }
 
+    /**
+     * Applies production 11.
+     *
+     * @param interiorNode  expected to be null
+     * @param graphNodeList list with upper exterior node and 5 lower exterior nodes (in that order)
+     */
     @Override
     public void apply(TetrahedralGraph graph, InteriorNode interiorNode, List<GraphNode> graphNodeList) {
         verifyInteriorNodeIsNull(interiorNode);
